@@ -76,16 +76,16 @@ const ProtectionMeta = () => {
       }
 
       // Disable Ctrl+A (Select All)
-      if (e.ctrlKey && e.keyCode === 65) {
-        e.preventDefault();
-        return false;
-      }
+      // if (e.ctrlKey && e.keyCode === 65) {
+      //   e.preventDefault();
+      //   return false;
+      // }
 
       // Disable Ctrl+C (Copy)
-      if (e.ctrlKey && e.keyCode === 67) {
-        e.preventDefault();
-        return false;
-      }
+      // if (e.ctrlKey && e.keyCode === 67) {
+      //   e.preventDefault();
+      //   return false;
+      // }
 
       // Disable Ctrl+V (Paste)
       if (e.ctrlKey && e.keyCode === 86) {

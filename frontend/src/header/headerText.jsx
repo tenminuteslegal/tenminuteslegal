@@ -38,4 +38,4 @@ function HeaderText() {
   );
 }
 
-export default HeaderText
+export default HeaderText;
