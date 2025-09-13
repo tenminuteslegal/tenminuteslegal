@@ -1,8 +1,9 @@
-// src/context/AuthContext.jsx
+
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-
 const AuthContext = createContext();
+
+const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios
-        .get("http://localhost:5000/api/profile", {
+        .get(`${backendURL}/api/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => setUser(res.data))
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   // Redirect user to Google OAuth
   const loginWithGoogle = () => {
-    window.location.href = "http://localhost:5000/auth/google";
+    window.location.href = `${backendURL}/auth/google`;
   };
 
   // Handle OAuth callback (after redirect from Google)

@@ -1,7 +1,6 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./page/home";
-import { useState } from "react";
 import LoginModal from "./page/modal/loginModal";
 import { useAuth } from "./lib/AuthContext";
 import ArticleData from "./components/ArticleData";

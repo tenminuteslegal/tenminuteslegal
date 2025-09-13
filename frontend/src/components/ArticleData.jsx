@@ -2,32 +2,14 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../lib/AuthContext";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ArticleData = () => {
   const { id } = useParams();
   const { loginModalHandler } = useAuth();
-  console.log("Article ID from URL:", id);
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // from supabase
-  // useEffect(() => {
-  //   const load = async () => {
-  //     const { data, error } = await supabase
-  //       .from("articles")
-  //       .select("*")
-  //       .eq("id", id)
-  //       .single();
-  //     if (!error && data) {
-  //       setArticle(data);
-  //     } else {
-  //       // fallback to local static data
-  //       setArticle(getArticleById(id));
-  //     }
-  //     setLoading(false);
-  //   };
-  //   load();
-  // }, [id]);
 
   useEffect(() => {
     const load = async () => {
@@ -39,7 +21,7 @@ const ArticleData = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/api/data/${id}`, {
+        const response = await fetch(`${BACKEND_URL}/api/data/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

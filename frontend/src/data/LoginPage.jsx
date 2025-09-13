@@ -1,9 +1,9 @@
 
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 // import axios from "axios";
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_I;
 
-const clientId =
-  "1086949398176-k2r6ujkc99378urjafp5uoeu83gpmsu5.apps.googleusercontent.com"; // Replace with your Google OAuth client ID
+// Replace with your Google OAuth client ID
 
 const LoginPage = () => {
 //   const fetchData = async (data) => {
@@ -29,7 +29,7 @@ const LoginPage = () => {
   };
 
   return (
-    <GoogleOAuthProvider clientId={clientId}>
+    <GoogleOAuthProvider clientId={CLIENT_ID}>
       <div
         style={{
           display: "flex",

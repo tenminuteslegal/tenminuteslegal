@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../lib/AuthContext.jsx";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 
 // const BACKEND_URL =
@@ -9,8 +11,8 @@ import { useAuth } from "../lib/AuthContext.jsx";
 // const CLIENT_ID =
 //   process.env.REACT_APP_GOOGLE_CLIENT_ID ||
 //   "1086949398176-k2r6ujkc99378urjafp5uoeu83gpmsu5.apps.googleusercontent.com";
-const BACKEND_URL = "http://localhost:5000";
-const CLIENT_ID =  "1086949398176-k2r6ujkc99378urjafp5uoeu83gpmsu5.apps.googleusercontent.com";
+
+const CLIENT_ID =  import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export default function LoginAuth() {
   const [user, setUser] = useState(null);

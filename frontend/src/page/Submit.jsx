@@ -1,18 +1,20 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../lib/AuthContext";
 
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-const ADMIN_EMAILS = ["admin@example.com"]; // Hardcoded admins
 
 export default function SubmitPage() {
-  const [session] = useState({ user: { email: "admin@example.com" } }); // fake auth
+  const { user } = useAuth();
+  const [session] = useState({ user: { email: user.email } }); // fake auth
   const [title, setTitle] = useState("");
   const [subTitle, setSubTitle] = useState("");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const ADMIN_EMAILS = [user.email]; // Hardcoded admins
   
   const textareaRef = useRef(null);
 

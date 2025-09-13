@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ArticleItem from "../article/article";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const MainContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -10,7 +11,7 @@ const MainContent = () => {
   useEffect(() => {
     const getArticles = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/data", {
+        const response = await fetch(`${BACKEND_URL}/api/data`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("app_token")}`,
           },

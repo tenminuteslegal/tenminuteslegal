@@ -7,6 +7,8 @@ const path = require("path");
 const { OAuth2Client } = require("google-auth-library");
 const jwt = require("jsonwebtoken");
 
+const FRONTEND_URL = process.env.VITE_FRONTEND || "http://localhost:5173";
+
 const app = express();
 
 app.use(
@@ -21,7 +23,7 @@ app.use(
 app.use(express.json());
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const CLIENT_ORIGIN = process.env.CLIENT_URL || "http://localhost:5173";
+const CLIENT_ORIGIN = FRONTEND_URL || "http://localhost:5173";
 const JWT_SECRET = process.env.JWT_SECRET || "change_this_secret";
 const PORT = process.env.PORT || 5000;
 
