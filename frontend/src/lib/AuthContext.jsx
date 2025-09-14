@@ -11,16 +11,16 @@ export const AuthProvider = ({ children }) => {
   const [canProceed, setCanProceed] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
 
-  useEffect(() => {
-    if (token) {
-      axios
-        .get(`${backendURL}/api/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => setUser(res.data))
-        .catch(() => logout());
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     axios
+  //       .get(`${backendURL}/api/profile`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       })
+  //       .then((res) => setUser(res.data))
+  //       .catch(() => logout());
+  //   }
+  // }, [token]);
 
   // Redirect user to Google OAuth
   const loginWithGoogle = () => {
