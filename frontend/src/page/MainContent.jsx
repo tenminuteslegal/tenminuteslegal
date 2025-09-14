@@ -17,6 +17,7 @@ const MainContent = () => {
           },
         });
         const result = await response.json();
+        console.log("Response from /api/data:", result);
         // console.log("Fetched articles:", result);
         setDbArticles(result.data.articles || []);
         // console.log("Fetched articles: list only", result.data.articles);
