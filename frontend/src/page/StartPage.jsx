@@ -61,6 +61,7 @@ const StartPage = () => {
             <input
               type="text"
               value={""}
+              onChange={() => handleProceedToHomepage()}
               className="w-full bg-gray-900 text-white px-4 py-3 pr-12 rounded-lg border border-gray-700 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 placeholder-gray-400"
               placeholder="Search 10 mins legal..."
             />

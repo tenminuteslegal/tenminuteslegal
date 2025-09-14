@@ -93,8 +93,8 @@ const ArticleData = () => {
       <div className="max-w-4xl mx-auto px-4">
         {/* Back Button */}
         <div className="mb-6">
-          <Link
-            to="/"
+          <button
+            onClick={() => window.history.back()}
             className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
           >
             <svg
@@ -111,7 +111,7 @@ const ArticleData = () => {
               />
             </svg>
             Back to Articles
-          </Link>
+          </button>
         </div>
 
         {/* Article Header */}

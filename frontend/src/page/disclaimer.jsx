@@ -15,7 +15,7 @@ export default function LegalDisclaimer() {
       {/* Header */}
       <div className="bg-[#2A2A2A] text-white py-[60px]">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="flex items-center justify-center space-x-3">
+          <div className="flex items-center justify-center text-center space-x-3">
             <div>
               <h1 className="text-lg font-semibold">Legal Disclaimer Notice</h1>
               <p className="text-sm text-gray-300">
@@ -29,6 +29,27 @@ export default function LegalDisclaimer() {
       {/* Main Content */}
       <div className="max-w-5xl mx-auto ">
         <div className=" p-8">
+          <div className="mb-6">
+            <button
+              onClick={() => window.history.back()}
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Back to Articles
+            </button>
+          </div>
           {/* Warning Banner */}
           <div className="mb-6">
             <h2 className="font-semibold text-[14px] uppercase tracking-wide">

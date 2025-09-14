@@ -20,10 +20,11 @@ function App() {
       <div className="min-h-screen flex flex-col">
         {/* Header */}
         {(canProceed || location.pathname === "/disclaimer") && (
+          // <Link to="/" className="absolute top-4 left-4 text-white text-sm underline"></Link>
           <header className="flex lg:flex-row items-center justify-center lg:justify-between px-4 py-4 sm:py-6 bg-black relative">
             {/* Logo Section - Always centered */}
             <div className="flex flex-col  items-center justify-center w-full lg:w-auto mx-auto">
-              <div className="h-[80px] w-[140px] s:h-[50px] s:w-[50px]">
+              <div className="h-[80px] w-[140px] s:h-[50px] s:w-[50px]" onClick={() => window.location.href = '/'}>
                 <img
                   src={minutes}
                   alt="10 min logo"
