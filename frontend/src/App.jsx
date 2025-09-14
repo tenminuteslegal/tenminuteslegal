@@ -1,22 +1,25 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import Home from "./page/home";
 import LoginModal from "./page/modal/loginModal";
 import { useAuth } from "./lib/AuthContext";
 import ArticleData from "./components/ArticleData";
 import SubmitPage from "./page/Submit";
 import minutes from "./assets/logo-white.png";
+import Footer from "./components/Footer";
+import LegalDisclaimer from "./page/disclaimer";
 
 function App() {
   // const [loginOpen, setLoginOpen] = useState(false);
   const { user, canProceed, loginOpen } = useAuth();
-  console.log("Current user:", user);
+  const location = useLocation();
+  console.log("Current user:", user, location.pathname);
 
   return (
-    <Router>
-      <div className="">
+    <>
+      <div className="min-h-screen flex flex-col">
         {/* Header */}
-        {canProceed && (
+        {(canProceed || location.pathname === "/disclaimer") && (
           <header className="flex lg:flex-row items-center justify-center lg:justify-between px-4 py-4 sm:py-6 bg-black relative">
             {/* Logo Section - Always centered */}
             <div className="flex flex-col  items-center justify-center w-full lg:w-auto mx-auto">
@@ -54,14 +57,17 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/:id" element={<ArticleData />} />
             <Route path="/submit" element={<SubmitPage />} />
+            <Route path="/disclaimer" element={<LegalDisclaimer />} />
           </Routes>
         </main>
 
         {/* Login Modal */}
         {loginOpen && <LoginModal  />}
         {/* <LoginModal  /> */}
+
+        {(canProceed || location.pathname === "/disclaimer") && <Footer />}
       </div>
-    </Router>
+    </>
   );
 }
 
