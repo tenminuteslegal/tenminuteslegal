@@ -1,32 +1,24 @@
-// src/LoginPage.jsx
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+// Login.jsx
+import { auth, googleProvider } from "../lib/firebase";
+import { signInWithPopup } from "firebase/auth";
 
-export default function LoginAuth() {
-  const auth = getAuth();
-  const provider = new GoogleAuthProvider();
-
-  const handleLogin = async () => {
+const Login = () => {
+  const handleGoogleLogin = async () => {
     try {
-      const data = await signInWithPopup(auth, provider);
-      console.log(data)
-      // Handle successful login
+      const result = await signInWithPopup(auth, googleProvider);
+      // The signed-in user info
+      console.log("User:", result.user);
+
+      // You can also get Google Access Token
+      const credential = googleProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      console.log("Google Access Token:", token);
     } catch (error) {
-      // Handle login error
-      console.error("Login failed:", error);
+      console.error("Error logging in with Google:", error.message);
     }
   };
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        marginTop: 10,
-      }}
-    >
-      <h2>Login with Google</h2>
-      <button onClick={handleLogin}>Sign in with Google</button>
-    </div>
-  );
-}
+  return <button onClick={handleGoogleLogin}>Sign in with Google</button>;
+};
+
+export default Login;
