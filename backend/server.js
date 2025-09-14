@@ -12,10 +12,11 @@ const jwt = require("jsonwebtoken");
 // Initialize Firebase Admin
 const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
   "./firebaseServiceAccountKey.json");
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: process.env.FIREBASE_DATABASE_URL,
+// });
+admin.initializeApp();
 
 const FRONTEND_URL = process.env.VITE_FRONTEND || "http://localhost:5173";
 
