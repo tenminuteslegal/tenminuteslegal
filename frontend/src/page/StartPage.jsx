@@ -56,7 +56,7 @@ const StartPage = () => {
         </div>
 
         {/* Shortcuts grid */}
-        <div className="w-full max-w-md mb-8">
+        {/* <div className="w-full max-w-md mb-8">
           <div className="relative">
             <input
               type="text"
@@ -72,7 +72,7 @@ const StartPage = () => {
               <Search size={18} />
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Proceed to Homepage Button */}
         <button

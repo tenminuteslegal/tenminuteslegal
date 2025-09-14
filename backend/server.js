@@ -4,8 +4,18 @@ const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-const { OAuth2Client } = require("google-auth-library");
+
+// Firebase Admin SDK
+const admin = require("firebase-admin");
 const jwt = require("jsonwebtoken");
+
+// Initialize Firebase Admin
+const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
+  "./firebaseServiceAccountKey.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+});
 
 const FRONTEND_URL = process.env.VITE_FRONTEND || "http://localhost:5173";
 
@@ -29,62 +39,33 @@ const PORT = process.env.PORT || 5000;
 
 const googleClient = new OAuth2Client(CLIENT_ID);
 
-// Paths to data files
-const usersFile = path.join(__dirname, "data", "users.json");
-const postsFile = path.join(__dirname, "data", "posts.json");
+// Firebase Realtime Database helpers
+const db = admin.database();
 
-// Helpers to read/write JSON files
-function readJson(file) {
-  try {
-    const raw = fs.readFileSync(file, "utf-8");
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error(`Error reading ${file}:`, err);
-    return [];
-  }
-}
-
-function writeJson(file, data) {
-  try {
-    fs.writeFileSync(file, JSON.stringify(data, null, 2), "utf-8");
-  } catch (err) {
-    console.error(`Error writing ${file}:`, err);
-  }
-}
-
-// POST /auth/google/verify
+// POST /auth/google/verify (Firebase Auth)
 app.post("/auth/google/verify", async (req, res) => {
   const { token } = req.body;
   if (!token) return res.status(400).json({ error: "No token provided" });
 
   try {
-    const ticket = await googleClient.verifyIdToken({
-      idToken: token,
-      audience: CLIENT_ID,
-    });
-    const payload = ticket.getPayload();
-    const googleId = payload.sub;
+    // Verify Firebase ID token
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const uid = decodedToken.uid;
 
-    // Load users from file
-    let users = readJson(usersFile);
+    // Get user record from Firebase Auth
+    const userRecord = await admin.auth().getUser(uid);
+    const user = {
+      id: userRecord.uid,
+      email: userRecord.email,
+      name: userRecord.displayName,
+      avatar: userRecord.photoURL,
+      role:
+        userRecord.customClaims && userRecord.customClaims.role
+          ? userRecord.customClaims.role
+          : "user",
+    };
 
-    // Find or create user
-    let user = users.find((u) => u.id === googleId);
-    if (!user) {
-      const role = users.length === 0 ? "admin" : "user";
-      user = {
-        id: googleId,
-        email: payload.email,
-        name: payload.name,
-        avatar: payload.picture,
-        role,
-      };
-      users.push(user);
-      writeJson(usersFile, users);
-      console.log(`New user saved: ${user.email}`);
-    }
-
-    // Issue app JWT
+    // Issue app JWT (optional, for your app's session)
     const appToken = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
@@ -93,8 +74,8 @@ app.post("/auth/google/verify", async (req, res) => {
 
     return res.json({ token: appToken, user });
   } catch (err) {
-    console.error("Token verification failed:", err);
-    return res.status(401).json({ error: "Invalid Google ID token" });
+    console.error("Firebase Auth token verification failed:", err);
+    return res.status(401).json({ error: "Invalid Firebase ID token" });
   }
 });
 
@@ -127,52 +108,68 @@ function requireRole(role) {
   };
 }
 
-// Routes
-app.get("/api/data", (req, res) => {
-  const posts = readJson(postsFile);
-  res.json({ data: posts, user: req.user });
-});
-// app.get("/api/data", verifyAppToken, (req, res) => {
-//   const posts = readJson(postsFile);
-//   res.json({ data: posts, user: req.user });
-// });
-
-app.post("/api/data", verifyAppToken, requireRole("admin"), (req, res) => {
-  const { title, subtitle, content, plan, publicationDate } = req.body;
-  if (!title || !content) {
-    return res.status(400).json({ error: "All fields required" });
+// GET all posts from Firebase Realtime Database
+app.get("/api/data", async (req, res) => {
+  try {
+    const snapshot = await db.ref("articles").once("value");
+    const articles = snapshot.val() || [];
+    res.json({ data: { articles }, user: req.user });
+  } catch (err) {
+    console.error("Error fetching posts from Firebase:", err);
+    res.status(500).json({ error: "Failed to fetch posts" });
   }
-
-  let posts = readJson(postsFile);
-  const newItem = {
-    id: title.toLowerCase().replace(/\s+/g, "-"),
-    title,
-    subtitle,
-    content,
-    publicationDate: publicationDate || new Date().toISOString(),
-    plan: plan || "free", // default to "free" if not provided
-  };
-  console.log(posts)
-
-  posts.articles.push(newItem);
-  writeJson(postsFile, posts);
-
-  res.status(201).json({ item: newItem });
 });
 
+// POST new post to Firebase Realtime Database
+app.post(
+  "/api/data",
+  verifyAppToken,
+  requireRole("admin"),
+  async (req, res) => {
+    const { title, subtitle, content, plan, publicationDate } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ error: "All fields required" });
+    }
 
-app.get("/api/data/:id", verifyAppToken, (req, res) => {
+    const newItem = {
+      id: title.toLowerCase().replace(/\s+/g, "-"),
+      title,
+      subtitle,
+      content,
+      publicationDate: publicationDate || new Date().toISOString(),
+      plan: plan || "free",
+    };
+
+    try {
+      await db.ref("articles").push(newItem);
+      res.status(201).json({ item: newItem });
+    } catch (err) {
+      console.error("Error saving post to Firebase:", err);
+      res.status(500).json({ error: "Failed to save post" });
+    }
+  }
+);
+
+// GET single post by id from Firebase Realtime Database
+app.get("/api/data/:id", verifyAppToken, async (req, res) => {
   const { id } = req.params;
-  const posts = readJson(postsFile);
-  // console.log("Fetched posts:", posts, id);
-
-  const post = posts.articles.find((p) => p.id === id);
-  // console.log(`Looking for post with id ${id}:`, post);
-  if (!post) {
-    return res.status(404).json({ error: "Item not found" });
+  try {
+    const snapshot = await db
+      .ref("articles")
+      .orderByChild("id")
+      .equalTo(id)
+      .once("value");
+    const articles = snapshot.val();
+    if (!articles) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+    // articles is an object with keys as Firebase push IDs
+    const post = Object.values(articles)[0];
+    res.json({ post });
+  } catch (err) {
+    console.error("Error fetching post from Firebase:", err);
+    res.status(500).json({ error: "Failed to fetch post" });
   }
-
-  res.json({ post });
 });
 
 app.listen(PORT, () => {
