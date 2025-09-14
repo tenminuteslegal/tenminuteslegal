@@ -38,7 +38,7 @@ const CLIENT_ORIGIN = FRONTEND_URL || "http://localhost:5173";
 const JWT_SECRET = process.env.JWT_SECRET || "change_this_secret";
 const PORT = process.env.PORT || 5000;
 
-const googleClient = new OAuth2Client(CLIENT_ID);
+// const googleClient = new OAuth2Client(CLIENT_ID);
 
 // Firebase Realtime Database helpers
 const db = admin.database();
