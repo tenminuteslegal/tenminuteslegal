@@ -1,13 +1,3 @@
-import React from "react";
-import {
-  FileText,
-  Scale,
-  AlertTriangle,
-  Copyright,
-  ExternalLink,
-  RefreshCw,
-  Shield,
-} from "lucide-react";
 
 export default function LegalDisclaimer() {
   return (
@@ -32,7 +22,7 @@ export default function LegalDisclaimer() {
           <div className="mb-6">
             <button
               onClick={() => window.history.back()}
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+              className="inline-flex items-center text-[#404040] hover:text-black-800 transition-colors"
             >
               <svg
                 className="w-5 h-5 mr-2"

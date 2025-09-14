@@ -15,6 +15,13 @@ function App() {
   const location = useLocation();
   console.log("Current user:", user, location.pathname);
 
+  const handleLogout = () => {
+    // Clear user session (e.g., remove token from localStorage)
+    localStorage.removeItem("app_token");
+    // Optionally, you can also clear user state in AuthContext if needed
+    window.location.href = '/'; // Redirect to homepage or login page
+  }
+
   return (
     <>
       <div className="min-h-screen flex flex-col">
@@ -49,6 +56,20 @@ function App() {
                 </Link>
               </div>
             )}
+            {user?.role === "user" && (
+              <div className="mt-3 lg:mt-0 lg:absolute lg:right-6">
+                <button
+                  onClick={handleLogout}
+                  className="border border-white rounded-md px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-3 
+                   text-xs sm:text-sm lg:text-base 
+                   text-white hover:bg-white hover:text-black transition"
+                >
+                  Log Out
+                </button>
+              </div>
+            )}
+
+            
           </header>
         )}
 
