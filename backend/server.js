@@ -24,7 +24,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: FRONTEND_URL, // or 3000 if using CRA
+    origin: ["https://one0minuteslegal-1.onrender.com", FRONTEND_URL],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
