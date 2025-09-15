@@ -166,6 +166,7 @@ app.get("/api/data/:id", verifyAppToken, async (req, res) => {
     }
     // articles is an object with keys as Firebase push IDs
     const post = Object.values(articles)[0];
+    console.log(post)
     res.json({ post });
   } catch (err) {
     console.error("Error fetching post from Firebase:", err);

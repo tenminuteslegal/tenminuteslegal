@@ -38,10 +38,12 @@ const ArticleData = () => {
         const data = await response.json();
         console.log("Fetched article data:", data);
 
-        if (data?.post) {
-          console.log("Setting article data:", data.post);
-          setArticle(data.post);
-        }
+        console.log("Setting article data:", data);
+        setArticle(data);
+        // if (data?.post) {
+        //   console.log("Setting article data:", data.post);
+        //   setArticle(data.post);
+        // }
       } catch (error) {
         console.error("Error fetching article:", error);
       } finally {
