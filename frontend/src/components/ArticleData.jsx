@@ -39,7 +39,7 @@ const ArticleData = () => {
         console.log("Fetched article data:", data);
 
         console.log("Setting article data:", data);
-        setArticle(data);
+        setArticle(data.post);
         // if (data?.post) {
         //   console.log("Setting article data:", data.post);
         //   setArticle(data.post);
