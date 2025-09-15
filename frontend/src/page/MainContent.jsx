@@ -34,6 +34,8 @@ const MainContent = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentArticles = dbArticles.slice(startIndex, endIndex);
+  console.log("Current Articles:", currentArticles);
+  console.log('database articles:', dbArticles);
 
   
   const handlePrevious = () =>

@@ -1,6 +1,31 @@
+/**
+ * @typedef {Object} User
+ * @property {string} [uid] - The user's unique ID
+ * @property {string} [email] - The user's email address
+ * @property {string} [displayName] - The user's display name
+ * @property {string} [photoURL] - The user's profile photo URL
+ * @property {'user' | 'admin'} [role] - The user's role
+ */
 
-import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+/**
+ * @typedef {Object} AuthContextValue
+ * @property {User|null} user - The current user object
+ * @property {string|null} token - The authentication token
+ * @property {() => void} loginWithGoogle - Function to initiate Google login
+ * @property {() => void} handleAuthCallback - Function to handle auth callback
+ * @property {(userData: User) => Promise<User>} saveUser - Function to save user data
+ * @property {() => void} logout - Function to log out the user
+ * @property {boolean} canProceed - Whether the user can proceed
+ * @property {() => void} proceedHandler - Function to handle proceed action
+ * @property {boolean} loginOpen - Whether the login modal is open
+ * @property {(isOpen: boolean) => void} loginOpenHandler - Function to handle login modal state
+ */
+
+/** @type {import('react').Context<AuthContextValue>} */
+
+
+import { createContext, useContext, useState } from "react";
+;
 const AuthContext = createContext();
 
 const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -50,7 +75,6 @@ export const AuthProvider = ({ children }) => {
     // if (!token) return;
 
     try {
-      
       setUser(userData); // update local user state
       return userData;
     } catch (err) {

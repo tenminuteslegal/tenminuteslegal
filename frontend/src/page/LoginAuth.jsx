@@ -4,7 +4,7 @@ import { auth, googleProvider } from "../lib/firebase";
 import { signInWithPopup } from "firebase/auth";
 
 const Login = () => {
-  const { saveUser } = useAuth();
+  const { saveUser, loginOpenHandler } = useAuth();
 
   const handleGoogleLogin = async () => {
     try {
@@ -18,6 +18,7 @@ const Login = () => {
       const token = result.user.accessToken;
       console.log("Google Access Token:", token);
       saveUser(result.user);
+      loginOpenHandler(false);
 
 
       // Send the ID token to your backend for verification and to get your app's JWT
