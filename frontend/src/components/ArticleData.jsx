@@ -10,7 +10,6 @@ const ArticleData = () => {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
     const load = async () => {
       try {
@@ -53,7 +52,6 @@ const ArticleData = () => {
 
     load();
   }, [id]);
-
 
   if (loading) {
     return (
@@ -121,18 +119,17 @@ const ArticleData = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-4 leading-tight">
             {article.title}
           </h1>
-
-        
-          
         </div>
 
         {/* Abstract */}
-        {article?.subtitle && <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Abstract</h2>
-          <p className="text-gray-700 leading-relaxed text-lg">
-            {article.subtitle}
-          </p>
-        </div>}
+        {article?.subtitle && (
+          <div className="bg-white rounded-lg shadow-md p-8 mb-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Abstract</h2>
+            <p className="text-gray-700 leading-relaxed text-lg">
+              {article.subtitle}
+            </p>
+          </div>
+        )}
 
         {/* Article Content */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-6">
@@ -141,8 +138,6 @@ const ArticleData = () => {
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         </div>
-
-      
       </div>
     </div>
   );

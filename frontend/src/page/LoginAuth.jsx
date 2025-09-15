@@ -13,18 +13,39 @@ const Login = () => {
       console.log("User:", result.user);
       console.log("result:", result);
 
-      // You can also get Google Access Token
-      
-      const token = result.user.accessToken;
-      console.log("Google Access Token:", token);
-      saveUser(result.user);
-      loginOpenHandler(false);
+      // Get the ID token
+      const idToken = await result.user.getIdToken();
 
+      // Send the token to your backend
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"
+          }/auth/google/verify`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: idToken }),
+          }
+        );
 
-      // Send the ID token to your backend for verification and to get your app's JWT
+        const data = await response.json();
+        console.log("Backend response:", data);
+        if (data.error) {
+          throw new Error(data.error);
+        }
 
-      localStorage.setItem("app_token", token);
-
+        console.log("App Token:", data.token);
+        // Save the app token and user data
+        localStorage.setItem("app_token", data.token);
+        saveUser(data.user);
+        loginOpenHandler(false);
+      } catch (error) {
+        console.error("Backend verification failed:", error);
+        throw error;
+      }
     } catch (error) {
       console.error("Error logging in with Google:", error.message);
     }
