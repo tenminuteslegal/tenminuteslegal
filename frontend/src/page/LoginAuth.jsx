@@ -15,44 +15,47 @@ const Login = () => {
       console.log("result:", result);
 
       // Get the ID token
-      const idToken = await result.user.accessToken;
+      const idToken = result.user.accessToken;
       // const idToken = await result.user.getIdToken();
       
       console.log("ID Token:", idToken);
+      localStorage.setItem("app_token", idToken);
+      saveUser(result.user);
+      loginOpenHandler(false);
 
       // Send the token to your backend
-      try {
-        const response = await fetch(
-          `${
-            import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"
-          }/auth/google/verify`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token: idToken }),
-          }
-        );
+      // try {
+      //   const response = await fetch(
+      //     `${
+      //       import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"
+      //     }/auth/google/verify`,
+      //     {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({ token: idToken }),
+      //     }
+      //   );
 
-        const data = await response.json();
-        console.log(data)
-        console.log("Backend response:", data);
-        if (data.error) {
-          throw new Error(data.error);
-        }
+      //   const data = await response.json();
+      //   console.log(data)
+      //   console.log("Backend response:", data);
+      //   if (data.error) {
+      //     throw new Error(data.error);
+      //   }
 
         
 
-        console.log("App Token:", data.token);
-        // Save the app token and user data
-        localStorage.setItem("app_token", data.token);
-        saveUser(data.user);
-        loginOpenHandler(false);
-      } catch (error) {
-        console.error("Backend verification failed:", error);
-        throw error;
-      }
+      //   console.log("App Token:", data.token);
+      //   // Save the app token and user data
+      //   localStorage.setItem("app_token", data.token);
+      //   saveUser(data.user);
+      //   loginOpenHandler(false);
+      // } catch (error) {
+      //   console.error("Backend verification failed:", error);
+      //   throw error;
+      // }
     } catch (error) {
       console.error("Error logging in with Google:", error.message);
     }
