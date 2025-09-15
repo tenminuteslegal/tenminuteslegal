@@ -73,12 +73,63 @@ app.post("/auth/google/verify", async (req, res) => {
       { expiresIn: "24h" }
     );
 
+    // Persist basic user profile in Realtime Database under `users/{uid}`
+    try {
+      await db.ref(`users/${uid}`).update({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        role: user.role,
+        lastSignIn: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.error("Failed to persist user profile:", e);
+    }
+
+    // Ensure the Firebase Auth custom claims include role. If not present, set it.
+    try {
+      const currentClaims = userRecord.customClaims || {};
+      if (!currentClaims.role) {
+        await admin
+          .auth()
+          .setCustomUserClaims(uid, { ...currentClaims, role: user.role });
+      }
+    } catch (e) {
+      console.error("Failed to set custom claims:", e);
+    }
+
     return res.json({ token: appToken, user });
   } catch (err) {
     console.error("Firebase Auth token verification failed:", err);
     return res.status(401).json({ error: "Invalid Firebase ID token" });
   }
 });
+
+// Optional admin-only endpoint to update a user's role.
+app.post(
+  "/admin/users/:uid/role",
+  verifyAppToken,
+  requireRole("admin"),
+  async (req, res) => {
+    const { uid } = req.params;
+    const { role } = req.body;
+    if (!role) return res.status(400).json({ error: "Role is required" });
+
+    try {
+      // Update Realtime DB
+      await db.ref(`users/${uid}`).update({ role });
+      // Update Firebase Auth custom claims
+      const userRecord = await admin.auth().getUser(uid);
+      const claims = userRecord.customClaims || {};
+      await admin.auth().setCustomUserClaims(uid, { ...claims, role });
+      res.json({ success: true });
+    } catch (err) {
+      console.error("Failed to update user role:", err);
+      res.status(500).json({ error: "Failed to update role" });
+    }
+  }
+);
 
 // Middleware to check app JWT
 function verifyAppToken(req, res, next) {
@@ -166,7 +217,7 @@ app.get("/api/data/:id", verifyAppToken, async (req, res) => {
     }
     // articles is an object with keys as Firebase push IDs
     const post = Object.values(articles)[0];
-    console.log(post)
+    console.log(post);
     res.json({ post });
   } catch (err) {
     console.error("Error fetching post from Firebase:", err);
