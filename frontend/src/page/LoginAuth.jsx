@@ -2,10 +2,7 @@
 import { useAuth } from "../lib/AuthContext";
 import { auth, googleProvider } from "../lib/firebase";
 import { signInWithPopup } from "firebase/auth";
-import { onAuthUserCreate } from "firebase-functions/v2/auth";
-import admin from "firebase-admin";
 
-const adminEmails = ["example1@gmail.com", "keahnney01@gmail.com"];
 
 const Login = () => {
   const { saveUser, loginOpenHandler } = useAuth();
@@ -41,15 +38,7 @@ const Login = () => {
           throw new Error(data.error);
         }
 
-        const setUserRole = onAuthUserCreate(async (event) => {
-          const { uid, email } = event.data;
-
-          const role = adminEmails.includes(email) ? "admin" : "user";
-
-          await admin.auth().setCustomUserClaims(uid, { role });
-
-          console.log(`Assigned role=${role} to ${email}`);
-        });
+        
 
         console.log("App Token:", data.token);
         // Save the app token and user data

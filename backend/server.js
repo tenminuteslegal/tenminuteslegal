@@ -53,6 +53,10 @@ app.post("/auth/google/verify", async (req, res) => {
     const decodedToken = await admin.auth().verifyIdToken(token);
     const uid = decodedToken.uid;
 
+
+    const adminEmails = ["example1@gmail.com", "keahnney01@gmail.com"];
+    const role = adminEmails.includes(email) ? "admin" : "user";
+
     // Get user record from Firebase Auth
     const userRecord = await admin.auth().getUser(uid);
     const user = {
@@ -63,7 +67,7 @@ app.post("/auth/google/verify", async (req, res) => {
       role:
         userRecord.customClaims && userRecord.customClaims.role
           ? userRecord.customClaims.role
-          : "user",
+          : role,
     };
 
     // Issue app JWT (optional, for your app's session)
@@ -72,6 +76,8 @@ app.post("/auth/google/verify", async (req, res) => {
       JWT_SECRET,
       { expiresIn: "24h" }
     );
+
+    
 
     // Persist basic user profile in Realtime Database under `users/{uid}`
     try {
