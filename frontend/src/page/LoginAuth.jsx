@@ -16,6 +16,8 @@ const Login = () => {
 
       // Get the ID token
       const idToken = await result.user.getIdToken();
+      
+      console.log("ID Token:", idToken);
 
       // Send the token to your backend
       try {
@@ -33,6 +35,7 @@ const Login = () => {
         );
 
         const data = await response.json();
+        console.log(data)
         console.log("Backend response:", data);
         if (data.error) {
           throw new Error(data.error);
