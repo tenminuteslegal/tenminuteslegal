@@ -24,7 +24,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://one0minuteslegal-1.onrender.com", FRONTEND_URL],
+    origin: [
+      "https://one0minuteslegal-1.onrender.com",
+      "http://localhost:5173",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -69,6 +72,7 @@ app.post("/auth/google/verify", async (req, res) => {
           ? userRecord.customClaims.role
           : role,
     };
+    console.log("Authenticated user:", user);
 
     // Issue app JWT (optional, for your app's session)
     const appToken = jwt.sign(

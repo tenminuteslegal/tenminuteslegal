@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ArticleItem from "../article/article";
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const MainContent = () => {
   const [currentPage, setCurrentPage] = useState(1);

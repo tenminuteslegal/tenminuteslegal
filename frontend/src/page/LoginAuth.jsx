@@ -15,7 +15,8 @@ const Login = () => {
       console.log("result:", result);
 
       // Get the ID token
-      const idToken = await result.user.getIdToken();
+      const idToken = await result.user.accessToken;
+      // const idToken = await result.user.getIdToken();
       
       console.log("ID Token:", idToken);
 
