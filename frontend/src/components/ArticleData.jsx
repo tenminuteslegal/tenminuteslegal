@@ -1,7 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../store/AuthReduxContext";
 
-import { useAuth } from "../lib/AuthContext";
+// import { useAuth } from "../lib/AuthContext";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const ArticleData = () => {

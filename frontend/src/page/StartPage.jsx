@@ -1,6 +1,7 @@
 import minutes from "../assets/logo-white.png";
 import { Search } from "lucide-react";
-import { useAuth } from "../lib/AuthContext";
+import { useAuth } from "../store/AuthReduxContext";
+// import { useAuth } from "../lib/AuthContext";
 
 const StartPage = () => {
   const { proceedHandler } = useAuth();

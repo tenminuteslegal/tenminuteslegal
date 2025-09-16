@@ -1,9 +1,10 @@
 // src/pages/Home.jsx
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../lib/AuthContext";
+// import { useAuth } from "../lib/AuthContext";
 import MainContent from "./MainContent";
 import StartPage from "./StartPage";
+import { useAuth } from "../store/AuthReduxContext";
 
 export default function Home() {
   const { user, canProceed } = useAuth();

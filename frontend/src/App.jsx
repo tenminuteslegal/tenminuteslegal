@@ -2,12 +2,13 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import Home from "./page/home";
 import LoginModal from "./page/modal/loginModal";
-import { useAuth } from "./lib/AuthContext";
+// import { useAuth } from "./lib/AuthContext";
 import ArticleData from "./components/ArticleData";
 import SubmitPage from "./page/Submit";
 import minutes from "./assets/logo-white.png";
 import Footer from "./components/Footer";
 import LegalDisclaimer from "./page/disclaimer";
+import { useAuth } from "./store/AuthReduxContext";
 
 function App() {
   // const [loginOpen, setLoginOpen] = useState(false);

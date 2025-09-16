@@ -1,5 +1,6 @@
+import { useAuth } from "../../store/AuthReduxContext";
 import LoginAuth from "../LoginAuth";
-import { useAuth } from "../../lib/AuthContext";
+// import { useAuth } from "../../lib/AuthContext";
 
 export default function LoginModal() {
   const { loginOpenHandler } = useAuth();

@@ -1,16 +1,19 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../lib/AuthContext";
+import { useAuth } from "../store/AuthReduxContext";
+// import { useAuth } from "../lib/AuthContext";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+;
 
 
 export default function SubmitPage() {
   const { user } = useAuth();
   const [session] = useState({ user: { email: user.email } }); // fake auth
   const [title, setTitle] = useState("");
-  const [subTitle, setSubTitle] = useState("");
+  const [subtitle, setSubTitle] = useState("");
   const [content, setContent] = useState("");
+  const [role, setRole] = useState("free"); // Add this new state
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -20,6 +23,8 @@ export default function SubmitPage() {
 
   const isAdmin =
     !!session?.user?.email && ADMIN_EMAILS.includes(session.user.email);
+
+    console.log('is admin:', isAdmin);
 
   // Insert tag around selected text
   const insertTag = (tagStart, tagEnd) => {
@@ -59,17 +64,18 @@ export default function SubmitPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("app_token")}`
         },
-        body: JSON.stringify({ title, subTitle, content }),
-      });
+        body: JSON.stringify({ title, subtitle, content, role }), // Add role to the body
+      }); 
 
       const data = await res.json();
+      console.log("Save response:", data);
       if (!res.ok) throw new Error(data.error || "Failed to save");
 
       setMessage("✅ Saved successfully");
       setTitle("");
       setSubTitle("");
       setContent("");
-      // console.log(err.message);
+      setRole("free"); // Reset role
     } catch (err) {
       setMessage(err.message);
     } finally {
@@ -123,7 +129,7 @@ export default function SubmitPage() {
             Subtitle
           </label>
           <textarea
-            value={subTitle}
+            value={subtitle}
             onChange={(e) => setSubTitle(e.target.value)}
             className="w-full px-3 py-2 border rounded min-h-[120px]"
           />
@@ -173,6 +179,37 @@ export default function SubmitPage() {
             onChange={(e) => setContent(e.target.value)}
             className="w-full px-3 py-2 border rounded min-h-[200px]"
           />
+        </div>
+
+        {/* Role Selector */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Article Access
+          </label>
+          <div className="flex gap-4">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio text-blue-600"
+                name="role"
+                value="free"
+                checked={role === "free"}
+                onChange={(e) => setRole(e.target.value)}
+              />
+              <span className="ml-2">Free</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio text-blue-600"
+                name="role"
+                value="paid"
+                checked={role === "paid"}
+                onChange={(e) => setRole(e.target.value)}
+              />
+              <span className="ml-2">Paid</span>
+            </label>
+          </div>
         </div>
 
         {message && <div className="text-sm text-gray-600">{message}</div>}

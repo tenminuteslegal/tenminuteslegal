@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../lib/AuthContext";
+import { useAuth } from "../store/AuthReduxContext";
+import { useState } from "react";
+// import { useAuth } from "../lib/AuthContext";
 
 // Article Item Component
 const ArticleItem = ({ id, title, plan }) => {
   const { loginOpenHandler } = useAuth();
+  const [open, setOpen] = useState(false);
 
   const navigateHandler = (e) => {
     e.preventDefault(); // prevent default link behavior
@@ -17,7 +20,8 @@ const ArticleItem = ({ id, title, plan }) => {
 
     if (plan === "paid") {
       // Show plan details
-      return alert("This is a paid article. Please subscribe to access.");
+      setOpen(true);
+      return;
     }
     window.location.href = `/${id}`;
   };
@@ -44,6 +48,25 @@ const ArticleItem = ({ id, title, plan }) => {
           {plan}
         </p>
       </div>
+
+      {open && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+          <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+            <h2 className="text-lg font-semibold">Paid Article</h2>
+            <p className="mt-2 text-gray-600">
+              This is a paid article. Please subscribe to access.
+            </p>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={() => setOpen(false)}
+                className="px-4 py-2 bg-gray-300 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </label>
   );
 };

@@ -18,12 +18,14 @@ admin.initializeApp({
 });
 // admin.initializeApp();
 
-const FRONTEND_URL = process.env.VITE_FRONTEND || "http://localhost:5173";
+const FRONTEND_URL =  "http://localhost:5173";
+// const FRONTEND_URL = process.env.VITE_FRONTEND || "http://localhost:5173";
 
 const app = express();
 
 app.use(
   cors({
+    // origin: FRONTEND_URL,
     origin: [
       "https://one0minuteslegal-1.onrender.com",
       "http://localhost:5173",
@@ -52,12 +54,15 @@ app.post("/auth/google/verify", async (req, res) => {
   if (!token) return res.status(400).json({ error: "No token provided" });
 
   try {
+    console.log('databse')
     // Verify Firebase ID token
     const decodedToken = await admin.auth().verifyIdToken(token);
+    console.log(decodedToken);
     const uid = decodedToken.uid;
+    const email = decodedToken.email; // ✅ get email from decoded token
 
-
-    const adminEmails = ["example1@gmail.com", "keahnney01@gmail.com"];
+    // Role assignment
+    const adminEmails = ["ajioyelade@gmail.com", "keahnney01@gmail.com"];
     const role = adminEmails.includes(email) ? "admin" : "user";
 
     // Get user record from Firebase Auth
@@ -67,11 +72,10 @@ app.post("/auth/google/verify", async (req, res) => {
       email: userRecord.email,
       name: userRecord.displayName,
       avatar: userRecord.photoURL,
-      role:
-        userRecord.customClaims && userRecord.customClaims.role
-          ? userRecord.customClaims.role
-          : role,
+      role: role,
+      lastSignIn: new Date().toISOString(),
     };
+
     console.log("Authenticated user:", user);
 
     // Issue app JWT (optional, for your app's session)
@@ -81,9 +85,7 @@ app.post("/auth/google/verify", async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    
-
-    // Persist basic user profile in Realtime Database under `users/{uid}`
+    // Persist basic user profile in Realtime Database
     try {
       await db.ref(`users/${uid}`).update({
         id: user.id,
@@ -91,13 +93,13 @@ app.post("/auth/google/verify", async (req, res) => {
         name: user.name,
         avatar: user.avatar,
         role: user.role,
-        lastSignIn: new Date().toISOString(),
+        lastSignIn: user.lastSignIn,
       });
     } catch (e) {
       console.error("Failed to persist user profile:", e);
     }
 
-    // Ensure the Firebase Auth custom claims include role. If not present, set it.
+    // Ensure the Firebase Auth custom claims include role
     try {
       const currentClaims = userRecord.customClaims || {};
       if (!currentClaims.role) {
@@ -175,7 +177,8 @@ app.get("/api/data", async (req, res) => {
   try {
     const snapshot = await db.ref("articles").once("value");
     const articles = snapshot.val() || [];
-    res.json({ data: { articles }, user: req.user });
+    // console.log(articles);
+    res.json({ articles, user: req.user });
   } catch (err) {
     console.error("Error fetching posts from Firebase:", err);
     res.status(500).json({ error: "Failed to fetch posts" });
@@ -188,7 +191,7 @@ app.post(
   verifyAppToken,
   requireRole("admin"),
   async (req, res) => {
-    const { title, subtitle, content, plan, publicationDate } = req.body;
+    const { title, subtitle, content, role } = req.body;
     if (!title || !content) {
       return res.status(400).json({ error: "All fields required" });
     }
@@ -198,15 +201,17 @@ app.post(
       title,
       subtitle,
       content,
-      publicationDate: publicationDate || new Date().toISOString(),
-      plan: plan || "free",
+      publicationDate: new Date().toISOString(),
+      role: role || "free",
     };
+
+    console.log(newItem)
 
     try {
       await db.ref("articles").push(newItem);
       res.status(201).json({ item: newItem });
     } catch (err) {
-      console.error("Error saving post to Firebase:", err);
+       console.error("Error saving post to Firebase:", err.message, err.stack);
       res.status(500).json({ error: "Failed to save post" });
     }
   }

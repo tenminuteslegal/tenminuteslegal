@@ -1,0 +1,129 @@
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setArticles,
+  setCurrentArticle,
+  setLoading,
+  setError,
+  addArticle,
+  updateArticle,
+  deleteArticle,
+} from "./articleSlice";
+
+// const BACKEND_URL =  "http://localhost:5000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+export const useArticles = () => {
+  const dispatch = useDispatch();
+  const { articles, currentArticle, loading, error } = useSelector(
+    (state) => state.articles
+  );
+
+  const fetchArticles = async () => {
+    try {
+      dispatch(setLoading(true));
+
+      // const response = await fetch(`${BACKEND_URL}/api/data`, {
+      //     headers: {
+      //       Authorization: `Bearer ${localStorage.getItem("app_token")}`,
+      //     },
+      //   });
+        //     const result = await response.json();
+
+      const response = await fetch(`${BACKEND_URL}/api/data`);
+      const data = await response.json();
+      console.log("use article data:", data);
+      console.log("use article data:", data.data);
+      console.log("use article data:", data.articles);
+      dispatch(setArticles(data.data.articles));
+    } catch (err) {
+      dispatch(setError(err.message));
+    }
+  };
+
+  const fetchArticleById = async (id) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await fetch(`${BACKEND_URL}/api/data/${id}`);
+      const data = await response.json();
+      dispatch(setCurrentArticle(data));
+    } catch (err) {
+      dispatch(setError(err.message));
+    }
+  };
+
+  const createArticle = async (articleData) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await fetch(`${BACKEND_URL}/api/data`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(articleData),
+      });
+      const data = await response.json();
+      dispatch(addArticle(data));
+      return data;
+    } catch (err) {
+      dispatch(setError(err.message));
+      throw err;
+    }
+  };
+
+  const editArticle = async (id, articleData) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await fetch(`${BACKEND_URL}/api/data/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(articleData),
+      });
+      const data = await response.json();
+      dispatch(updateArticle(data));
+      return data;
+    } catch (err) {
+      dispatch(setError(err.message));
+      throw err;
+    }
+  };
+
+  const removeArticle = async (id) => {
+    try {
+      dispatch(setLoading(true));
+      await fetch(`${BACKEND_URL}/api/data/${id}`, {
+        method: "DELETE",
+      });
+      dispatch(deleteArticle(id));
+    } catch (err) {
+      dispatch(setError(err.message));
+      throw err;
+    }
+  };
+
+  const clearCurrentArticle = () => {
+    dispatch(setCurrentArticle(null));
+  };
+
+  const clearError = () => {
+    dispatch(setError(null));
+  };
+
+  return {
+    // State
+    articles,
+    currentArticle,
+    loading,
+    error,
+
+    // Methods
+    fetchArticles,
+    fetchArticleById,
+    createArticle,
+    editArticle,
+    removeArticle,
+    clearCurrentArticle,
+    clearError,
+  };
+};
