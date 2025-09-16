@@ -34,7 +34,7 @@ export const useArticles = () => {
       console.log("use article data:", data);
       console.log("use article data:", data.data);
       console.log("use article data:", data.articles);
-      dispatch(setArticles(data.data.articles));
+      dispatch(setArticles(data.articles));
     } catch (err) {
       dispatch(setError(err.message));
     }
