@@ -1,5 +1,4 @@
 // Login.jsx
-
 import { auth, googleProvider } from "../lib/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useAuth } from "../store/AuthReduxContext";
