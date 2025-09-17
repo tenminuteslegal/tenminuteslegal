@@ -62,7 +62,7 @@ app.post("/auth/google/verify", async (req, res) => {
     const email = decodedToken.email; // ✅ get email from decoded token
 
     // Role assignment
-    const adminEmails = ["ajioyelade@gmail.com", "keahnney01@gmail.com"];
+    const adminEmails = ["ajioyelade@gmail.com", "keahnney01@gmail.com", "tenminuteslegal@gmail.com"];
     const role = adminEmails.includes(email) ? "admin" : "user";
 
     // Get user record from Firebase Auth
@@ -191,10 +191,10 @@ app.post(
   verifyAppToken,
   requireRole("admin"),
   async (req, res) => {
-    const { title, subtitle, content, role } = req.body;
-    if (!title || !content) {
-      return res.status(400).json({ error: "All fields required" });
-    }
+    const { title, subtitle, content, plan } = req.body;
+    // if (!title || !content) {
+    //   return res.status(400).json({ error: "All fields required" });
+    // }
 
     const newItem = {
       id: title.toLowerCase().replace(/\s+/g, "-"),
@@ -202,17 +202,33 @@ app.post(
       subtitle,
       content,
       publicationDate: new Date().toISOString(),
-      role: role || "free",
+      plan: plan ,
     };
 
     console.log(newItem)
 
     try {
       await db.ref("articles").push(newItem);
-      res.status(201).json({ item: newItem });
+      return res.status(201).json(newItem);
+      // return res.status(201).json({
+      //   success: true,
+      //   message: "Article created successfully",
+      //   data: {
+      //     article: {
+      //       ...newArticle,
+      //        // Important for future operations
+      //     },
+         
+      //   },
+      // });
     } catch (err) {
        console.error("Error saving post to Firebase:", err.message, err.stack);
-      res.status(500).json({ error: "Failed to save post" });
+      return res.status(500).json({
+        success: false,
+        error: "Failed to create article",
+        code: err.code || "FIREBASE_ERROR",
+        message: err.message,
+      });
     }
   }
 );

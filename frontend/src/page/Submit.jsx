@@ -1,19 +1,21 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../store/AuthReduxContext";
+import { useArticles } from "../store/useArticles";
 // import { useAuth } from "../lib/AuthContext";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-;
+
 
 
 export default function SubmitPage() {
   const { user } = useAuth();
+  const { createArticle } = useArticles();
   const [session] = useState({ user: { email: user.email } }); // fake auth
   const [title, setTitle] = useState("");
   const [subtitle, setSubTitle] = useState("");
   const [content, setContent] = useState("");
-  const [role, setRole] = useState("free"); // Add this new state
+  const [plan, setPlan] = useState("free"); // Add this new state
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -58,24 +60,25 @@ export default function SubmitPage() {
     setMessage("");
 
     try {
-      const res = await fetch(`${BACKEND_URL}/api/data`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("app_token")}`
-        },
-        body: JSON.stringify({ title, subtitle, content, role }), // Add role to the body
-      }); 
+      // const res = await fetch(`${BACKEND_URL}/api/data`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${localStorage.getItem("app_token")}`
+      //   },
+      //   body: JSON.stringify({ title, subtitle, content, plan }), // Add plan to the body
+      // }); 
 
-      const data = await res.json();
-      console.log("Save response:", data);
-      if (!res.ok) throw new Error(data.error || "Failed to save");
+      // const data = await res.json();
+      createArticle({ title, subtitle, content, plan });
+      // console.log("Save response:", data);
+      // if (!res.ok) throw new Error(data.error || "Failed to save");
 
       setMessage("✅ Saved successfully");
       setTitle("");
       setSubTitle("");
       setContent("");
-      setRole("free"); // Reset role
+      setPlan("free"); // Reset plan
     } catch (err) {
       setMessage(err.message);
     } finally {
@@ -191,10 +194,10 @@ export default function SubmitPage() {
               <input
                 type="radio"
                 className="form-radio text-blue-600"
-                name="role"
+                name="plan"
                 value="free"
-                checked={role === "free"}
-                onChange={(e) => setRole(e.target.value)}
+                checked={plan === "free"}
+                onChange={(e) => setPlan(e.target.value)}
               />
               <span className="ml-2">Free</span>
             </label>
@@ -202,10 +205,10 @@ export default function SubmitPage() {
               <input
                 type="radio"
                 className="form-radio text-blue-600"
-                name="role"
+                name="plan"
                 value="paid"
-                checked={role === "paid"}
-                onChange={(e) => setRole(e.target.value)}
+                checked={plan === "paid"}
+                onChange={(e) => setPlan(e.target.value)}
               />
               <span className="ml-2">Paid</span>
             </label>

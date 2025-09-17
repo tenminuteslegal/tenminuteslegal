@@ -9,7 +9,7 @@ const StartPage = () => {
   const handleProceedToHomepage = () => {
     // Handle proceed to homepage
     console.log("Proceeding to homepage");
-    proceedHandler();
+    proceedHandler(true);
   };
 
   return (

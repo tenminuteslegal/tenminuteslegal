@@ -6,7 +6,7 @@ import { useState } from "react";
 
 // Article Item Component
 const ArticleItem = ({ id, title, plan }) => {
-  const { loginOpenHandler } = useAuth();
+  const { loginOpenHandler, user } = useAuth();
   const [open, setOpen] = useState(false);
 
   const navigateHandler = (e) => {
@@ -21,6 +21,12 @@ const ArticleItem = ({ id, title, plan }) => {
     if (plan === "paid") {
       // Show plan details
       setOpen(true);
+      return;
+    }
+
+    if (user?.role === "admin" && plan === "paid") {
+      // Allow navigation for free articles
+      window.location.href = `/${id}`;
       return;
     }
     window.location.href = `/${id}`;

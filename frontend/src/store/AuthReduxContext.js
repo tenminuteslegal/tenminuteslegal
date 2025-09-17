@@ -29,8 +29,8 @@ export const useAuth = () => {
     }
   };
 
-  const proceedHandler = () => {
-    dispatch(setCanProceed(true));
+  const proceedHandler = (proceed) => {
+    dispatch(setCanProceed(proceed));
   };
 
   const loginOpenHandler = (isOpen) => {

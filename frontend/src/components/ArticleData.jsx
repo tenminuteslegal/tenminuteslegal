@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../store/AuthReduxContext";
 
@@ -7,9 +7,10 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const ArticleData = () => {
   const { id } = useParams();
-  const { loginModalHandler } = useAuth();
+  const { loginOpenHandler, proceedHandler, user } = useAuth();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const load = async () => {
@@ -54,6 +55,15 @@ const ArticleData = () => {
     load();
   }, [id]);
 
+  const backHandler = () => {
+    console.log("Navigating back to articles list");
+    if (!user) {
+      loginOpenHandler();
+    }
+    proceedHandler(true);
+    navigate("/");
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
@@ -77,12 +87,12 @@ const ArticleData = () => {
             <p className="text-gray-600 mb-6">
               The article you&apos;re looking for doesn&apos;t exist.
             </p>
-            <Link
-              to="/"
+            <button
+              onClick={() => backHandler()}
               className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Back to Articles
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -95,7 +105,7 @@ const ArticleData = () => {
         {/* Back Button */}
         <div className="mb-6">
           <button
-            onClick={() => window.history.back()}
+            onClick={() => backHandler()}
             className="inline-flex items-center text-black-600 hover:text-blue-700 transition-colors"
           >
             <svg

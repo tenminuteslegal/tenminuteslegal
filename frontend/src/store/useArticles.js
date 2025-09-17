@@ -53,15 +53,17 @@ export const useArticles = () => {
 
   const createArticle = async (articleData) => {
     try {
+      console.log("Creating article with data:", articleData);
       dispatch(setLoading(true));
       const response = await fetch(`${BACKEND_URL}/api/data`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("app_token")}`,
         },
         body: JSON.stringify(articleData),
       });
       const data = await response.json();
+      console.log(data)
       dispatch(addArticle(data));
       return data;
     } catch (err) {
@@ -76,7 +78,7 @@ export const useArticles = () => {
       const response = await fetch(`${BACKEND_URL}/api/data/${id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("app_token")}`,
         },
         body: JSON.stringify(articleData),
       });

@@ -18,8 +18,8 @@ export default function Home() {
       {/* Content */}
       {/* <main className="max-w-3x  x-auto flex items-center justify-center flex-col"> */}
       <main className="">
-        {canProceed  && <MainContent />}
         {(!canProceed && !user) && <StartPage />}
+        {canProceed  && <MainContent />}
       </main>
     </div>
   );
