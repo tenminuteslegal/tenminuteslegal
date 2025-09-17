@@ -10,8 +10,8 @@ const admin = require("firebase-admin");
 const jwt = require("jsonwebtoken");
 
 // Initialize Firebase Admin
-const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
-  "./firebaseServiceAccountKey.json");
+// const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
+//   "./firebaseServiceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
