@@ -40,7 +40,7 @@ app.use(
   cors({
     // origin: FRONTEND_URL,
     origin: [
-      "https://one0minuteslegal-1.onrender.com",
+      "https://tenminuteslegal-f.onrender.com",
       "http://localhost:5173",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
