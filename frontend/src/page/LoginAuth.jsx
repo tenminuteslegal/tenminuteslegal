@@ -3,9 +3,8 @@ import { auth, googleProvider } from "../lib/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useAuth } from "../store/AuthReduxContext";
 
-const BACKEND_URL =  "http://localhost:5000";
-// const BACKEND_URL =
-//   "https://tenminuteslegal-b.onrender.com" || "http://localhost:5000";
+// const BACKEND_URL =  "http://localhost:5000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BACKEND_URL_DEV;
 
 
 const Login = () => {

@@ -6,8 +6,6 @@ import { useArticles } from "../store/useArticles";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
-
-
 export default function SubmitPage() {
   const { user } = useAuth();
   const { createArticle } = useArticles();
@@ -20,13 +18,13 @@ export default function SubmitPage() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const ADMIN_EMAILS = [user.email]; // Hardcoded admins
-  
+
   const textareaRef = useRef(null);
 
   const isAdmin =
     !!session?.user?.email && ADMIN_EMAILS.includes(session.user.email);
 
-    console.log('is admin:', isAdmin);
+  console.log("is admin:", isAdmin);
 
   // Insert tag around selected text
   const insertTag = (tagStart, tagEnd) => {
@@ -60,21 +58,9 @@ export default function SubmitPage() {
     setMessage("");
 
     try {
-      // const res = await fetch(`${BACKEND_URL}/api/data`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${localStorage.getItem("app_token")}`
-      //   },
-      //   body: JSON.stringify({ title, subtitle, content, plan }), // Add plan to the body
-      // }); 
-
-      // const data = await res.json();
       createArticle({ title, subtitle, content, plan });
-      // console.log("Save response:", data);
-      // if (!res.ok) throw new Error(data.error || "Failed to save");
 
-      setMessage("✅ Saved successfully");
+      // setMessage("✅ Saved successfully");
       setTitle("");
       setSubTitle("");
       setContent("");
@@ -122,9 +108,6 @@ export default function SubmitPage() {
             required
           />
         </div>
-
-        
-       
 
         {/* Abstract */}
         <div>

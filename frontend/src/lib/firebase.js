@@ -1,7 +1,7 @@
 // firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { data } from "react-router-dom";
+
 
 // 🔑 Your Firebase config (from Firebase Console → Project Settings)
 const firebaseConfig = {
