@@ -31,8 +31,8 @@ admin.initializeApp({
 });
 // admin.initializeApp();
 
-const FRONTEND_URL =  "http://localhost:5173";
-// const FRONTEND_URL = process.env.VITE_FRONTEND || "http://localhost:5173";
+// const FRONTEND_URL =  "http://localhost:5173";
+const FRONTEND_URL = process.env.VITE_FRONTEND_PRO || "http://localhost:5173";      
 
 const app = express();
 
