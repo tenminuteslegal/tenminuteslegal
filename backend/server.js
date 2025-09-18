@@ -42,7 +42,8 @@ app.use(
     origin: [
       "https://tenminuteslegal-f.onrender.com",
       "http://localhost:5173",
-      "https://www.10minuteslegal.com"
+      "https://www.10minuteslegal.com",
+      "www.10minuteslegal.com"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
