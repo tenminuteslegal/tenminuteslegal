@@ -18,7 +18,7 @@ const ArticleData = () => {
         const token = localStorage.getItem("app_token");
         if (!token) {
           // Show login modal if no token
-          loginModalHandler();
+          loginOpenHandler();
           return;
         }
 
@@ -31,7 +31,7 @@ const ArticleData = () => {
         if (!response.ok) {
           // Unauthorized or server error
           if (response.status === 401) {
-            loginModalHandler();
+            loginOpenHandler();
           }
           throw new Error(`Request failed with status ${response.status}`);
         }
