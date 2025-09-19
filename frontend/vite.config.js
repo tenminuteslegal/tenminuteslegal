@@ -17,7 +17,7 @@
 
 import { resolve } from "path";
 import { defineConfig } from "vite";
-// import reactRefresh from "@vitejs/plugin-react-refresh";
+import reactRefresh from "@vitejs/plugin-react-refresh";
 
 const root = resolve(__dirname, "src");
 const outDir = resolve(__dirname, "dist");
