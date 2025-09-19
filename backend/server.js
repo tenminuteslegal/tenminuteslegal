@@ -224,18 +224,34 @@ app.post(
 
     try {
       await db.ref("articles").push(newItem);
-      return res.status(201).json(newItem);
+
+      // Then fetch all articles
+      // const snapshot = await db.ref("articles").once("value");
+      // const articles = snapshot.val() || [];
+
       // return res.status(201).json({
       //   success: true,
       //   message: "Article created successfully",
       //   data: {
       //     article: {
-      //       ...newArticle,
-      //        // Important for future operations
+      //       ...newItem,
       //     },
-         
+      //     articles: articles
       //   },
       // });
+
+      // return res.status(201).json(newItem);
+      return res.status(201).json({
+        success: true,
+        message: "Article created successfully",
+        data: {
+          article: {
+            ...newItem,
+             // Important for future operations
+          },
+         
+        },
+      });
     } catch (err) {
        console.error("Error saving post to Firebase:", err.message, err.stack);
       return res.status(500).json({

@@ -64,7 +64,7 @@ export const useArticles = () => {
       });
       const data = await response.json();
       console.log(data)
-      dispatch(addArticle(data));
+      // dispatch(addArticle(data));
       return data;
     } catch (err) {
       dispatch(setError(err.message));

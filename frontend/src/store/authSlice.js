@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: null,
-  token: localStorage.getItem("token"),
+  token: localStorage.getItem("app_token"),
   canProceed: false,
   loginOpen: false,
 };
@@ -17,9 +17,9 @@ const authSlice = createSlice({
     setToken: (state, action) => {
       state.token = action.payload;
       if (action.payload) {
-        localStorage.setItem("token", action.payload);
+        localStorage.setItem("app_token", action.payload);
       } else {
-        localStorage.removeItem("token");
+        localStorage.removeItem("app_token");
       }
     },
     setCanProceed: (state, action) => {
@@ -31,7 +31,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("token");
+      localStorage.removeItem("app_token");
     },
   },
 });

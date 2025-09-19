@@ -9,7 +9,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 export default function SubmitPage() {
   const { user } = useAuth();
   const { createArticle } = useArticles();
-  const [session] = useState({ user: { email: user.email } }); // fake auth
+  // const [session] = useState({ user: { email: user.email } }); // fake auth
   const [title, setTitle] = useState("");
   const [subtitle, setSubTitle] = useState("");
   const [content, setContent] = useState("");
@@ -17,12 +17,14 @@ export default function SubmitPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const ADMIN_EMAILS = [user.email]; // Hardcoded admins
+  // const ADMIN_EMAILS = [user.email]; // Hardcoded admins
 
   const textareaRef = useRef(null);
 
-  const isAdmin =
-    !!session?.user?.email && ADMIN_EMAILS.includes(session.user.email);
+  // const isAdmin =
+  //   !!session?.user?.email && ADMIN_EMAILS.includes(session.user.email);
+
+  const isAdmin = user?.role === "admin";
 
   console.log("is admin:", isAdmin);
 
@@ -58,9 +60,9 @@ export default function SubmitPage() {
     setMessage("");
 
     try {
-      createArticle({ title, subtitle, content, plan });
+      const result = await createArticle({ title, subtitle, content, plan });
 
-      // setMessage("✅ Saved successfully");
+      setMessage(result.message);
       setTitle("");
       setSubTitle("");
       setContent("");
@@ -72,7 +74,7 @@ export default function SubmitPage() {
     }
   };
 
-  if (!session) {
+  if (localStorage.getItem("app_token") === null) {
     return (
       <div className="p-6 text-center w-full">
         <p className="text-gray-700">Please sign in to continue.</p>
