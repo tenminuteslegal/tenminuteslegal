@@ -17,13 +17,14 @@ admin.initializeApp({
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    type: process.env.FIREBASE_TYPE, 
+    type: process.env.FIREBASE_TYPE,
     private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
     client_email: process.env.FIREBASE_CLIENT_EMAIL,
     client_id: process.env.FIREBASE_CLIENT_ID,
     auth_uri: process.env.FIREBASE_AUTH_URI,
     token_uri: process.env.FIREBASE_TOKEN_URI,
-    auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
+    auth_provider_x509_cert_url:
+      process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
     client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
     universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN,
   }),
@@ -32,7 +33,7 @@ admin.initializeApp({
 // admin.initializeApp();
 
 // const FRONTEND_URL =  "http://localhost:5173";
-const FRONTEND_URL = process.env.VITE_FRONTEND_PRO || "http://localhost:5173";      
+const FRONTEND_URL = process.env.VITE_FRONTEND_PRO || "http://localhost:5173";
 
 const app = express();
 
@@ -43,7 +44,7 @@ app.use(
       "https://tenminuteslegal-f.onrender.com",
       "http://localhost:5173",
       "https://www.10minuteslegal.com",
-      "www.10minuteslegal.com"
+      // "www.10minuteslegal.com",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -69,7 +70,7 @@ app.post("/auth/google/verify", async (req, res) => {
   if (!token) return res.status(400).json({ error: "No token provided" });
 
   try {
-    console.log('databse')
+    console.log("databse");
     // Verify Firebase ID token
     const decodedToken = await admin.auth().verifyIdToken(token);
     console.log(decodedToken);
@@ -77,7 +78,11 @@ app.post("/auth/google/verify", async (req, res) => {
     const email = decodedToken.email; // ✅ get email from decoded token
 
     // Role assignment
-    const adminEmails = ["ajioyelade@gmail.com", "keahnney01@gmail.com", "tenminuteslegal@gmail.com"];
+    const adminEmails = [
+      "ajioyelade@gmail.com",
+      "keahnney01@gmail.com",
+      "tenminuteslegal@gmail.com",
+    ];
     const role = adminEmails.includes(email) ? "admin" : "user";
 
     // Get user record from Firebase Auth
@@ -207,9 +212,9 @@ app.post(
   requireRole("admin"),
   async (req, res) => {
     const { title, subtitle, content, plan } = req.body;
-    // if (!title || !content) {
-    //   return res.status(400).json({ error: "All fields required" });
-    // }
+    if (!title || !content) {
+      return res.status(400).json({ error: "All fields required" });
+    }
 
     const newItem = {
       id: title.toLowerCase().replace(/\s+/g, "-"),
@@ -217,10 +222,10 @@ app.post(
       subtitle,
       content,
       publicationDate: new Date().toISOString(),
-      plan: plan ,
+      plan: plan,
     };
 
-    console.log(newItem)
+    console.log(newItem);
 
     try {
       await db.ref("articles").push(newItem);
@@ -245,15 +250,12 @@ app.post(
         success: true,
         message: "Article created successfully",
         data: {
-          article: {
-            ...newItem,
-             // Important for future operations
-          },
-         
+          ...newItem,
+          // Important for future operations
         },
       });
     } catch (err) {
-       console.error("Error saving post to Firebase:", err.message, err.stack);
+      console.error("Error saving post to Firebase:", err.message, err.stack);
       return res.status(500).json({
         success: false,
         error: "Failed to create article",

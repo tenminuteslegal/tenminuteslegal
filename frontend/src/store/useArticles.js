@@ -31,10 +31,19 @@ export const useArticles = () => {
 
       const response = await fetch(`${BACKEND_URL}/api/data`);
       const data = await response.json();
-      console.log("use article data:", data);
-      console.log("use article data:", data.data);
-      console.log("use article data:", data.articles);
-      dispatch(setArticles(data.articles));
+
+      const articlesWithKeysArray = Object.entries(data.articles).map(
+        ([key, value]) => {
+          return {
+            id: key, // The unique key from Firebase
+
+            ...value, // Spread the rest of the article data
+          };
+        }
+      );
+
+      console.log("Transformed articles array:", ...articlesWithKeysArray);
+      dispatch(setArticles(articlesWithKeysArray));
     } catch (err) {
       dispatch(setError(err.message));
     }
@@ -58,13 +67,26 @@ export const useArticles = () => {
       const response = await fetch(`${BACKEND_URL}/api/data`, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json", // 👈 required so backend knows it’s JSON
           Authorization: `Bearer ${localStorage.getItem("app_token")}`,
         },
-        body: JSON.stringify(articleData),
+        body: JSON.stringify(articleData), // articleData must be a plain object
       });
+
       const data = await response.json();
-      console.log(data)
-      // dispatch(addArticle(data));
+      // console.log(data.data.article)
+      const articlesWithKeysArray = Object.entries(data.data).map(
+        ([key, value]) => {
+          return {
+            id: key, // The unique key from Firebase
+
+            ...value, // Spread the rest of the article data
+          };
+        }
+      );
+      console.log("Transformed articles array:", ...articlesWithKeysArray);
+
+      dispatch(addArticle(articlesWithKeysArray));
       return data;
     } catch (err) {
       dispatch(setError(err.message));
