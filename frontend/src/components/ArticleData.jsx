@@ -1,16 +1,20 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../store/AuthReduxContext";
+import { authFetch } from "../lib/utils";
+import { useDispatch } from "react-redux";
 
 // import { useAuth } from "../lib/AuthContext";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const ArticleData = () => {
   const { id } = useParams();
-  const { loginOpenHandler, proceedHandler, user } = useAuth();
+  const { loginOpenHandler, proceedHandler, user, logout } = useAuth();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     const load = async () => {
@@ -28,12 +32,23 @@ const ArticleData = () => {
           },
         });
 
+        // const data = await authFetch(
+        //   `${BACKEND_URL}/api/data`,
+        //   {
+        //     method: "POST",
+        //     body: JSON.stringify(articleData),
+        //   },
+        //   () => dispatch(logout()) // 👈 What to do when 401
+        // );
+         
+        // console.log(response)
         if (!response.ok) {
           // Unauthorized or server error
           if (response.status === 401) {
-            loginOpenHandler();
+            logout();
           }
-          throw new Error(`Request failed with status ${response.status}`);
+          return
+          // throw new Error(`Request failed with status ${response.status}`);
         }
 
         const data = await response.json();

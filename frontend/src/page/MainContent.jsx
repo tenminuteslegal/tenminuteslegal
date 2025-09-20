@@ -44,7 +44,7 @@ const MainContent = () => {
       };
   
       fetchUser();
-    }, [saveUser]);
+    }, []);
 
   // console.log("articles from redux:", articles);
 

@@ -79,7 +79,6 @@ app.post("/auth/google/verify", async (req, res) => {
 
     // Role assignment
     const adminEmails = [
-      "ajioyelade@gmail.com",
       "keahnney01@gmail.com",
       "tenminuteslegal@gmail.com",
     ];
@@ -230,20 +229,7 @@ app.post(
     try {
       await db.ref("articles").push(newItem);
 
-      // Then fetch all articles
-      // const snapshot = await db.ref("articles").once("value");
-      // const articles = snapshot.val() || [];
-
-      // return res.status(201).json({
-      //   success: true,
-      //   message: "Article created successfully",
-      //   data: {
-      //     article: {
-      //       ...newItem,
-      //     },
-      //     articles: articles
-      //   },
-      // });
+     
 
       // return res.status(201).json(newItem);
       return res.status(201).json({

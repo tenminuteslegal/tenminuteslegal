@@ -14,6 +14,8 @@ import SubmitPage from "./page/Submit";
 import minutes from "./assets/logo-white.png";
 import Footer from "./components/Footer";
 import LegalDisclaimer from "./page/disclaimer";
+import ProtectionLayer from "./components/ProtectionLayer";
+import ProtectionMeta from "./components/ProtectionMeta";
 import { useAuth } from "./store/AuthReduxContext";
 
 function App() {
@@ -91,7 +93,8 @@ function App() {
 
         {/* Login Modal */}
         {loginOpen && <LoginModal />}
-        {/* <LoginModal  /> */}
+        <ProtectionLayer />
+        <ProtectionMeta />
 
         {(canProceed || location.pathname === "/disclaimer") && <Footer />}
       </div>

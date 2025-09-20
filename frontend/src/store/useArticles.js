@@ -41,8 +41,6 @@ export const useArticles = () => {
           };
         }
       );
-
-      // console.log("Transformed articles array:", ...articlesWithKeysArray);
       dispatch(setArticles(articlesWithKeysArray));
     } catch (err) {
       dispatch(setError(err.message));
@@ -68,12 +66,13 @@ export const useArticles = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json", // 👈 required so backend knows it’s JSON
-          Authorization: `Bearer ${localStorage.getItem("app_token")}`,
+          Authorization: `Bearer ${localStorage.getItem("fetch_token")}`,
         },
         body: JSON.stringify(articleData), // articleData must be a plain object
       });
 
       const data = await response.json();
+      console.log(data)
       // console.log(data.data.article)
       const articlesWithKeysArray = Object.entries(data.data).map(
         ([key, value]) => {

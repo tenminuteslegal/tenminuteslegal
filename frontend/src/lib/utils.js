@@ -62,3 +62,47 @@ export const fetchUserRole = async () => {
 
   return data;
 };
+
+export const handleApiError = (error, status) => {
+  if (status === 401) {
+    const errorEvent = new CustomEvent("fetch-error", {
+      detail: { status: 401, message: error.message },
+    });
+    window.dispatchEvent(errorEvent);
+  }
+  throw error;
+};
+
+// utils/authFetch.js
+  export const authFetch = async (url, options = {}, onUnauthorized) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const token = localStorage.getItem("app_token");
+
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          ...(options.headers || {}),
+        },
+      });
+
+      if (response.status === 401) {
+        // 👈 Call the provided function when unauthorized
+        if (typeof onUnauthorized === "function") {
+          onUnauthorized();
+        }
+        throw new Error("Unauthorized (401) — token invalid or expired");
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Request failed: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (err) {
+      throw err;
+    }
+  };
