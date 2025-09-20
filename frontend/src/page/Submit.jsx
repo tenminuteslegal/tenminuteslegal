@@ -2,6 +2,9 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../store/AuthReduxContext";
 import { useArticles } from "../store/useArticles";
+import { addArticle, setLoading } from "../store/articleSlice";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/authSlice";
 // import { useAuth } from "../lib/AuthContext";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -9,6 +12,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 export default function SubmitPage() {
   const { user } = useAuth();
   const { createArticle } = useArticles();
+  const dispatch = useDispatch();
   // const [session] = useState({ user: { email: user.email } }); // fake auth
   const [title, setTitle] = useState("");
   const [subtitle, setSubTitle] = useState("");
@@ -60,9 +64,43 @@ export default function SubmitPage() {
     setMessage("");
 
     try {
-      const result = await createArticle({ title, subtitle, content, plan });
+      // const result = await createArticle({ title, subtitle, content, plan });
 
-      setMessage(result.message);
+      dispatch(setLoading(true));
+      console.log("Creating article with data:")
+      const response = await fetch(`${BACKEND_URL}/api/data`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // 👈 required so backend knows it’s JSON
+          Authorization: `Bearer ${localStorage.getItem("app_token")}`,
+        },
+        body: JSON.stringify({ title, subtitle, content, plan }), // articleData must be a plain object
+      });
+      console.log(response)
+
+      if (response.status === 401) {
+        // dispatch()
+        console.log("Unauthorized, logging out");
+        dispatch(logout());
+        return;
+      }
+      const data = await response.json();
+      console.log(data);
+      // console.log(data.data.article)
+      const articlesWithKeysArray = Object.entries(data.data).map(
+        ([key, value]) => {
+          return {
+            id: key, // The unique key from Firebase
+
+            ...value, // Spread the rest of the article data
+          };
+        }
+      );
+      // console.log("Transformed articles array:", ...articlesWithKeysArray);
+
+      dispatch(addArticle(articlesWithKeysArray));
+
+      setMessage(data.message);
       setTitle("");
       setSubTitle("");
       setContent("");

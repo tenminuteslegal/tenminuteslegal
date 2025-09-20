@@ -93,8 +93,8 @@ function App() {
 
         {/* Login Modal */}
         {loginOpen && <LoginModal />}
-        <ProtectionLayer />
-        <ProtectionMeta />
+        {/* <ProtectionLayer /> */}
+        {/* <ProtectionMeta /> */}
 
         {(canProceed || location.pathname === "/disclaimer") && <Footer />}
       </div>

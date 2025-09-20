@@ -41,15 +41,11 @@ const ArticleData = () => {
         //   () => dispatch(logout()) // 👈 What to do when 401
         // );
          
-        // console.log(response)
-        if (!response.ok) {
-          // Unauthorized or server error
-          if (response.status === 401) {
-            logout();
-          }
+        if (response.status === 401) {
+          logout();
           return
-          // throw new Error(`Request failed with status ${response.status}`);
         }
+
 
         const data = await response.json();
         console.log("Fetched article data:", data);

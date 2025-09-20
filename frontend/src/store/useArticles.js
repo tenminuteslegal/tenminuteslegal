@@ -9,10 +9,12 @@ import {
   deleteArticle,
 } from "./articleSlice";
 
+
 // const BACKEND_URL =  "http://localhost:5000";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BACKEND_URL_DEV;
 
 export const useArticles = () => {
+  
   const dispatch = useDispatch();
   const { articles, currentArticle, loading, error } = useSelector(
     (state) => state.articles
@@ -66,11 +68,14 @@ export const useArticles = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json", // 👈 required so backend knows it’s JSON
-          Authorization: `Bearer ${localStorage.getItem("fetch_token")}`,
+          Authorization: `Bearer ${localStorage.getItem("app_token")}`,
         },
         body: JSON.stringify(articleData), // articleData must be a plain object
       });
 
+      if (!response.status === 401) {
+        // dispatch()
+      }
       const data = await response.json();
       console.log(data)
       // console.log(data.data.article)

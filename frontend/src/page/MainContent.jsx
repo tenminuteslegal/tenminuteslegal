@@ -36,6 +36,8 @@ const MainContent = () => {
             if (data.user) {
               saveUser(data.user);
             } 
+
+            // localStorage.setItem("app_token", data.token);
           } catch (error) {
             console.error("Error fetching user:", error);
            

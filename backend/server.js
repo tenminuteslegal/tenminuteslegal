@@ -101,7 +101,7 @@ app.post("/auth/google/verify", async (req, res) => {
     const appToken = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
-      { expiresIn: "5m" }
+      { expiresIn: "1h" }
     );
 
     // Persist basic user profile in Realtime Database
@@ -304,7 +304,7 @@ app.get('/auth/me', async (req, res) => {
     const userData = snapshot.val(); // Get the data from the snapshot
     // --- END REWRITTEN PART ---
 
-    res.json({ user: userData }); // Return the user data
+    res.json({ user: userData, token: decodedToken }); // Return the user data
   } catch (error) {
     console.error('Error verifying token or fetching user:', error);
     res.status(401).json({ error: 'Invalid token' });
