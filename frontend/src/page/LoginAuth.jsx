@@ -51,7 +51,7 @@ const Login = () => {
       console.log("ID Token:", idToken);
 
       // Save temporarily in localStorage (app will later replace with backend JWT)
-      // localStorage.setItem("firebase_token", idToken);
+      localStorage.setItem("firebase_token", idToken);
 
       const resultUser = {
         id: result.user.uid,

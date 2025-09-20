@@ -19,7 +19,8 @@ const MainContent = () => {
 
   useEffect(() => {
       const fetchUser = async () => {
-        const token = localStorage.getItem("app_token");
+        // const token = localStorage.getItem("app_token");
+        const token = localStorage.getItem("firebase_token");
         console.log("token in maincontent:", token);
         if (token) {
           try {
