@@ -102,7 +102,7 @@ app.post("/auth/google/verify", async (req, res) => {
     const appToken = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "5m" }
     );
 
     // Persist basic user profile in Realtime Database
@@ -286,6 +286,31 @@ app.get("/api/data/:id", verifyAppToken, async (req, res) => {
   } catch (err) {
     console.error("Error fetching post from Firebase:", err);
     res.status(500).json({ error: "Failed to fetch post" });
+  }
+});
+
+// Add this new route to your Express server
+app.get('/auth/me', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+
+    // Verify the token using Firebase Admin
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    
+    // Fetch user from your database using the decoded token
+    const user = await db.collection('users').doc(decodedToken.uid).get();
+    
+    if (!user.exists) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ user: user.data() });
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    res.status(401).json({ error: 'Invalid token' });
   }
 });
 

@@ -3,6 +3,7 @@ import { auth, googleProvider } from "../lib/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useAuth } from "../store/AuthReduxContext";
 import google_icon from "../assets/google-icon.png";
+import { useEffect } from "react";
 
 // const BACKEND_URL =  "http://localhost:5000";
 const BACKEND_URL =
@@ -10,6 +11,36 @@ const BACKEND_URL =
 
 const Login = () => {
   const { saveUser, loginOpenHandler } = useAuth();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("app_token");
+      if (token) {
+        try {
+          const response = await fetch(`${BACKEND_URL}/auth/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const data = await response.json();
+          console.log(data)
+
+          if (data.user) {
+            saveUser(data.user);
+          } else {
+            // If no user data, clear token
+            localStorage.removeItem("app_token");
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+          localStorage.removeItem("app_token");
+        }
+      }
+    };
+
+    fetchUser();
+  }, [saveUser]);
 
   const handleGoogleLogin = async () => {
     try {
@@ -20,7 +51,7 @@ const Login = () => {
       console.log("ID Token:", idToken);
 
       // Save temporarily in localStorage (app will later replace with backend JWT)
-      localStorage.setItem("firebase_token", idToken);
+      // localStorage.setItem("firebase_token", idToken);
 
       const resultUser = {
         id: result.user.uid,

@@ -42,7 +42,7 @@ export const useArticles = () => {
         }
       );
 
-      console.log("Transformed articles array:", ...articlesWithKeysArray);
+      // console.log("Transformed articles array:", ...articlesWithKeysArray);
       dispatch(setArticles(articlesWithKeysArray));
     } catch (err) {
       dispatch(setError(err.message));
@@ -84,7 +84,7 @@ export const useArticles = () => {
           };
         }
       );
-      console.log("Transformed articles array:", ...articlesWithKeysArray);
+      // console.log("Transformed articles array:", ...articlesWithKeysArray);
 
       dispatch(addArticle(articlesWithKeysArray));
       return data;

@@ -18,16 +18,11 @@ import { useAuth } from "./store/AuthReduxContext";
 
 function App() {
   // const [loginOpen, setLoginOpen] = useState(false);
-  const { user, canProceed, loginOpen, logoutUser } = useAuth();
+  const { user, canProceed, loginOpen, logout } = useAuth();
   const location = useLocation();
   console.log("Current user:", user, location.pathname);
 
-  const handleLogout = () => {
-    // Clear user session (e.g., remove token from localStorage)
-    localStorage.removeItem("app_token");
-    // Optionally, you can also clear user state in AuthContext if needed
-    window.location.href = "/"; // Redirect to homepage or login page
-  };
+  
 
   return (
     <>
@@ -53,21 +48,10 @@ function App() {
               </p>
             </div>
 
-            <div>
-              {(user?.role === "user" || user?.role === "admin") && (
-                <div className="mt-3 lg:mt-0 lg:absolute lg:right-6">
-                  <button
-                    onClick={() => logoutUser()}
-                    className="border border-white rounded-md px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-3 
-                     text-xs sm:text-sm lg:text-base 
-                     text-white hover:bg-white hover:text-black transition"
-                >
-                  Log Out
-                </button>
-              </div>)}
+            <div className="flex items-center space-x-4 lg:space-x-6">
               {/* Admin Submit Button */}
               {user?.role === "admin" && (
-                <div className="mt-3 lg:mt-0 lg:absolute lg:right-6">
+                <div className="mt-3 lg:mt-0  lg:right-6">
                   <Link
                     to="/submit"
                     className="border border-white rounded-md px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-3 
@@ -78,6 +62,17 @@ function App() {
                   </Link>
                 </div>
               )}
+              {(user?.role === "user" || user?.role === "admin") && (
+                <div className="mt-3 lg:mt-0  lg:right-6">
+                  <button
+                    onClick={logout}
+                    className="border border-white rounded-md px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-3 
+                     text-xs sm:text-sm lg:text-base 
+                     text-white hover:bg-white hover:text-black transition"
+                >
+                  Log Out
+                </button>
+              </div>)}
             </div>
             {/* {user?.role === "user" && ( */}
             {/* )} */}
