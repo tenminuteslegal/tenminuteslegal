@@ -54,16 +54,17 @@ function App() {
             </div>
 
             <div>
-              <div className="mt-3 lg:mt-0 lg:absolute lg:right-6">
-                <button
-                  onClick={() => logoutUser()}
-                  className="border border-white rounded-md px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-3 
-                   text-xs sm:text-sm lg:text-base 
-                   text-white hover:bg-white hover:text-black transition"
+              {(user?.role === "user" || user?.role === "admin") && (
+                <div className="mt-3 lg:mt-0 lg:absolute lg:right-6">
+                  <button
+                    onClick={() => logoutUser()}
+                    className="border border-white rounded-md px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-3 
+                     text-xs sm:text-sm lg:text-base 
+                     text-white hover:bg-white hover:text-black transition"
                 >
                   Log Out
                 </button>
-              </div>
+              </div>)}
               {/* Admin Submit Button */}
               {user?.role === "admin" && (
                 <div className="mt-3 lg:mt-0 lg:absolute lg:right-6">

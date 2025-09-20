@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useAuth } from "../store/AuthReduxContext";
 import { useState } from "react";
@@ -8,29 +8,29 @@ import { useState } from "react";
 const ArticleItem = ({ id, title, plan }) => {
   const { loginOpenHandler, user } = useAuth();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const navigateHandler = (e) => {
-    e.preventDefault(); // prevent default link behavior
-    const token = localStorage.getItem("app_token");
-    if (!token) {
-      // Show login modal if no token
-      loginOpenHandler(true);
-      return;
-    }
+const navigateHandler = (e) => {
+  e.preventDefault();
+  const token = localStorage.getItem("app_token");
 
-    if (plan === "paid") {
-      // Show plan details
-      setOpen(true);
-      return;
-    }
+  if (!token) {
+    loginOpenHandler(true);
+    return;
+  }
 
-    if (user?.role === "admin" && plan === "paid") {
-      // Allow navigation for free articles
-      window.location.href = `/${id}`;
-      return;
-    }
-    window.location.href = `/${id}`;
-  };
+  if (plan === "paid") {
+    setOpen(true);
+    return;
+  }
+
+  if (user?.role === "admin" && plan === "paid") {
+    navigate(`/${id}`); // ✅ SPA navigation
+    return;
+  }
+
+  navigate(`/${id}`); // ✅ SPA navigation
+};
 
   return (
     <label className="flex items-center justify-between space-x-2 py-3 border-b bg-[#f5f5f58c] px-[20px] rounded-[5px] border-gray-200 cursor-pointer">
