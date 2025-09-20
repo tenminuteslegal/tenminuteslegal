@@ -290,32 +290,41 @@ app.get("/api/data/:id", verifyAppToken, async (req, res) => {
 });
 
 // Add this new route to your Express server
+// Don't forget to initialize your Firebase Admin SDK
+// const admin = require('firebase-admin');
+// admin.initializeApp(); // Or pass your service account credentials
+
 app.get('/auth/me', async (req, res) => {
   try {
     const token = req.headers.authorization?.split('Bearer ')[1];
-    console.log(token)
+    console.log(token);
     if (!token) {
       return res.status(401).json({ error: 'No token provided' });
     }
 
     // Verify the token using Firebase Admin
-    console.log('token', token)
+    console.log('token', token);
     const decodedToken = await admin.auth().verifyIdToken(token);
     console.log('decodedToken', decodedToken);
 
-    // Fetch user from your database using the decoded token
-    const user = await db.collection('users').doc(decodedToken.uid).get();
-    
-    if (!user.exists) {
+    // --- REWRITTEN PART FOR REALTIME DATABASE ---
+    const userRef = admin.database().ref(`users/${decodedToken.uid}`);
+    const snapshot = await userRef.once('value');
+
+    if (!snapshot.exists()) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json({ user: user.data() });
+    const userData = snapshot.val(); // Get the data from the snapshot
+    // --- END REWRITTEN PART ---
+
+    res.json({ user: userData }); // Return the user data
   } catch (error) {
-    console.error('Error verifying token:', error);
+    console.error('Error verifying token or fetching user:', error);
     res.status(401).json({ error: 'Invalid token' });
   }
 });
+
 
 app.listen(PORT, () => {
   console.log(`Backend listening on http://localhost:${PORT}`);
