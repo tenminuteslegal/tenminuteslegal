@@ -77,7 +77,7 @@ export default function SubmitPage() {
          () => {
            // This runs if token expired or unauthorized (401)
            localStorage.removeItem("app_token");
-        dispatch(logout());
+          dispatch(logout());
            navigate("/"); // redirect to login
          }
        );

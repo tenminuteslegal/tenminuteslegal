@@ -67,7 +67,8 @@ const ArticleData = () => {
           () => {
             // This runs if token expired or unauthorized (401)
             localStorage.removeItem("app_token");
-            navigate("/"); // redirect to login
+            logout();
+            navigate("/"); // redirect to login       
           }
         );
 
