@@ -74,35 +74,28 @@ export const handleApiError = (error, status) => {
 };
 
 // utils/authFetch.js
-  export const authFetch = async (url, options = {}, onUnauthorized) => {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      const token = localStorage.getItem("app_token");
+export const authFetch = async (url, options = {}, onUnauthorized) => {
+  try {
+    const token = localStorage.getItem("app_token");
 
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          ...(options.headers || {}),
-        },
-      });
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        ...(options.headers || {}),
+      },
+    });
 
-      if (response.status === 401) {
-        // 👈 Call the provided function when unauthorized
-        if (typeof onUnauthorized === "function") {
-          onUnauthorized();
-        }
-        throw new Error("Unauthorized (401) — token invalid or expired");
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Request failed: ${response.status}`);
-      }
-
-      return response.json();
-    } catch (err) {
-      throw err;
+    if (response.status === 401) {
+      // Delete expired/invalid token
+      localStorage.removeItem("app_token");
+      if (onUnauthorized) onUnauthorized();
     }
-  };
+
+    return response;
+  } catch (err) {
+    console.error("Fetch failed:", err);
+    throw err;
+  }
+};

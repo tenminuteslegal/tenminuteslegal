@@ -5,6 +5,7 @@ import { useArticles } from "../store/useArticles";
 import { addArticle, setLoading } from "../store/articleSlice";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/authSlice";
+import { authFetch } from "../lib/utils";
 // import { useAuth } from "../lib/AuthContext";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -67,23 +68,36 @@ export default function SubmitPage() {
       // const result = await createArticle({ title, subtitle, content, plan });
 
       dispatch(setLoading(true));
+       const response = await authFetch(
+         `${BACKEND_URL}/api/data`, // 👈 your backend endpoint
+         {
+           method: "POST",
+           body: JSON.stringify({ title, subtitle, content, plan }),
+         },
+         () => {
+           // This runs if token expired or unauthorized (401)
+           localStorage.removeItem("app_token");
+        dispatch(logout());
+           navigate("/"); // redirect to login
+         }
+       );
       console.log("Creating article with data:")
-      const response = await fetch(`${BACKEND_URL}/api/data`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // 👈 required so backend knows it’s JSON
-          Authorization: `Bearer ${localStorage.getItem("app_token")}`,
-        },
-        body: JSON.stringify({ title, subtitle, content, plan }), // articleData must be a plain object
-      });
+      // const response = await fetch(`${BACKEND_URL}/api/data`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json", // 👈 required so backend knows it’s JSON
+      //     Authorization: `Bearer ${localStorage.getItem("app_token")}`,
+      //   },
+      //   body: JSON.stringify({ title, subtitle, content, plan }), // articleData must be a plain object
+      // });
       console.log(response)
 
-      if (response.status === 401) {
-        // dispatch()
-        console.log("Unauthorized, logging out");
-        dispatch(logout());
-        return;
-      }
+      // if (response.status === 401) {
+      //   // dispatch()
+      //   console.log("Unauthorized, logging out");
+      //   dispatch(logout());
+      //   return;
+      // }
       const data = await response.json();
       console.log(data);
       // console.log(data.data.article)

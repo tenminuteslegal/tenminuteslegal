@@ -101,7 +101,7 @@ app.post("/auth/google/verify", async (req, res) => {
     const appToken = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "1m" }
     );
 
     // Persist basic user profile in Realtime Database

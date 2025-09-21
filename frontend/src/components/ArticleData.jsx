@@ -15,49 +15,71 @@ const ArticleData = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     const load = async () => {
+      // try {
+      //   const token = localStorage.getItem("app_token");
+      //   if (!token) {
+      //     // Show login modal if no token
+      //     loginOpenHandler();
+      //     return;
+      //   }
+
+      //   const response = await fetch(`${BACKEND_URL}/api/data/${id}`, {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   });
+
+      //   // const data = await authFetch(
+      //   //   `${BACKEND_URL}/api/data`,
+      //   //   {
+      //   //     method: "POST",
+      //   //     body: JSON.stringify(articleData),
+      //   //   },
+      //   //   () => dispatch(logout()) // 👈 What to do when 401
+      //   // );
+
+      //   if (response.status === 401) {
+      //     logout();
+      //     return
+      //   }
+
+      //   const data = await response.json();
+      //   console.log("Fetched article data:", data);
+
+      //   console.log("Setting article data:", data);
+      //   setArticle(data.post);
+      //   // if (data?.post) {
+      //   //   console.log("Setting article data:", data.post);
+      //   //   setArticle(data.post);
+      //   // }
+      // } catch (error) {
+      //   console.error("Error fetching article:", error);
+      // } finally {
+      //   setLoading(false);
+      // }
+
       try {
-        const token = localStorage.getItem("app_token");
-        if (!token) {
-          // Show login modal if no token
-          loginOpenHandler();
-          return;
+        const response = await authFetch(
+          `${BACKEND_URL}/api/data/${id}`, // 👈 your backend endpoint
+          { method: "GET" },
+          () => {
+            // This runs if token expired or unauthorized (401)
+            localStorage.removeItem("app_token");
+            navigate("/"); // redirect to login
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile");
         }
-
-        const response = await fetch(`${BACKEND_URL}/api/data/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // const data = await authFetch(
-        //   `${BACKEND_URL}/api/data`,
-        //   {
-        //     method: "POST",
-        //     body: JSON.stringify(articleData),
-        //   },
-        //   () => dispatch(logout()) // 👈 What to do when 401
-        // );
-         
-        if (response.status === 401) {
-          logout();
-          return
-        }
-
 
         const data = await response.json();
-        console.log("Fetched article data:", data);
-
         console.log("Setting article data:", data);
         setArticle(data.post);
-        // if (data?.post) {
-        //   console.log("Setting article data:", data.post);
-        //   setArticle(data.post);
-        // }
-      } catch (error) {
-        console.error("Error fetching article:", error);
+      } catch (err) {
+          console.error("Error fetching article:", err);
       } finally {
         setLoading(false);
       }
@@ -73,7 +95,7 @@ const ArticleData = () => {
     }
     proceedHandler(true);
     navigate("/");
-  }
+  };
 
   if (loading) {
     return (
