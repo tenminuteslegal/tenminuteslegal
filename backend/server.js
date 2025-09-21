@@ -216,7 +216,7 @@ app.post(
     }
 
     const newItem = {
-      id: title.toLowerCase().replace(/\s+/g, "-"),
+      id: title.toLowerCase().replace(/[^a-z]/g, ""),
       title,
       subtitle,
       content,
