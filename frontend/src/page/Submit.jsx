@@ -59,13 +59,7 @@ export default function SubmitPage() {
   };
 
 
-  const formatContentForPreview = (text) => {
-    return text.split("\n\n").map((paragraph, index) => (
-      <p key={index} className="mb-4 leading-relaxed">
-        {paragraph.trim()}
-      </p>
-    ));
-  };
+ 
 
   const handleSave = async (e) => {
     e.preventDefault();
