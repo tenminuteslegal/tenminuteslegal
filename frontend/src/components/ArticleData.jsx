@@ -9,7 +9,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const ArticleData = () => {
   const { id } = useParams();
-  const { loginOpenHandler, proceedHandler, user, logout } = useAuth();
+  const { loginOpenHandler, proceedHandler, user, logoutUser } = useAuth();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ const ArticleData = () => {
             localStorage.removeItem("app_token");
            localStorage.removeItem("firebase_token");
 
-            logout();
+            logoutUser();
             navigate("/"); // redirect to login       
           }
         );
