@@ -1,29 +1,29 @@
-/
-export const fetchArticles = async () => {
-  const { data, error } = await supabase.from("articles").select("*");
-  console.log("Fetched articles:", data);
-  // console.log("Fetch error:", error);
 
-  if (error) {
-    console.error("Error fetching articles:", error.message);
-    return [];
-  }
+// export const fetchArticles = async () => {
+//   const { data, error } = await supabase.from("articles").select("*");
+//   console.log("Fetched articles:", data);
+//   // console.log("Fetch error:", error);
 
-  return data;
-};
+//   if (error) {
+//     console.error("Error fetching articles:", error.message);
+//     return [];
+//   }
 
-export const fetchUserRole = async () => {
-  const { data, error } = await supabase.from("profiles").select("role");
-  console.log("Fetched user role:", data);
-  // console.log("Fetch error:", error);
+//   return data;
+// };
 
-  if (error) {
-    console.error("Error fetching user role:", error.message);
-    return [];
-  }
+// export const fetchUserRole = async () => {
+//   const { data, error } = await supabase.from("profiles").select("role");
+//   console.log("Fetched user role:", data);
+//   // console.log("Fetch error:", error);
 
-  return data;
-};
+//   if (error) {
+//     console.error("Error fetching user role:", error.message);
+//     return [];
+//   }
+
+//   return data;
+// };
 
 export const handleApiError = (error, status) => {
   if (status === 401) {
