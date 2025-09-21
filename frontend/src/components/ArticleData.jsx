@@ -91,14 +91,33 @@ const ArticleData = () => {
     load();
   }, [id]);
 
+ 
   const formatContentForPreview = (text) => {
-    return text.split("\n\n").map((paragraph, index) => (
-      <p key={index} className="mb-4 leading-relaxed">
-        {paragraph.trim()}
-      </p>
-    ));
-  };
+    return text.split("\n\n").map((paragraph, index) => {
+      // Process bold text using **text** syntax
+      const processedParagraph = paragraph
+        .trim()
+        .split(/(\*\*.*?\*\*)/)
+        .map((part, partIndex) => {
+          if (part.startsWith("**") && part.endsWith("**")) {
+            // Remove ** and make it bold
+            const boldText = part.slice(2, -2);
+            return (
+              <strong key={partIndex} className="font-semibold">
+                {boldText}
+              </strong>
+            );
+          }
+          return part;
+        });
 
+      return (
+        <p key={index} className="mb-4 leading-relaxed">
+          {processedParagraph}
+        </p>
+      );
+    });
+  };
   const backHandler = () => {
     console.log("Navigating back to articles list");
     if (!user) {

@@ -196,7 +196,7 @@ export default function SubmitPage() {
             <button
               type="button"
               className="px-2 py-1 border rounded bg-gray-100 hover:bg-gray-200"
-              onClick={() => insertTag("<b>", "</b>")}
+              onClick={() => insertTag("**", "**")}
             >
               B
             </button>
