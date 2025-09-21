@@ -32,6 +32,8 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       localStorage.removeItem("app_token");
+           localStorage.removeItem("firebase_token");
+
     },
   },
 });
