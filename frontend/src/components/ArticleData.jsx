@@ -91,6 +91,14 @@ const ArticleData = () => {
     load();
   }, [id]);
 
+  const formatContentForPreview = (text) => {
+    return text.split("\n\n").map((paragraph, index) => (
+      <p key={index} className="mb-4 leading-relaxed">
+        {paragraph.trim()}
+      </p>
+    ));
+  };
+
   const backHandler = () => {
     console.log("Navigating back to articles list");
     if (!user) {
@@ -180,10 +188,14 @@ const ArticleData = () => {
 
         {/* Article Content */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-          <div
+          {/* <div
             className="prose prose-lg max-w-none text-gray-700 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: article.content }}
-          />
+            // dangerouslySetInnerHTML={{ __html: article.content }}
+            {formatContentForPreview(content)}
+          /> */}
+           <div className="text-gray-800 text-base">
+                    {formatContentForPreview(article.content)}
+                  </div>
         </div>
       </div>
     </div>

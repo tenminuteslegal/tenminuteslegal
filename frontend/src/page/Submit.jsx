@@ -58,6 +58,15 @@ export default function SubmitPage() {
     }, 0);
   };
 
+
+  const formatContentForPreview = (text) => {
+    return text.split("\n\n").map((paragraph, index) => (
+      <p key={index} className="mb-4 leading-relaxed">
+        {paragraph.trim()}
+      </p>
+    ));
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     if (!isAdmin) return;
@@ -204,6 +213,13 @@ export default function SubmitPage() {
               onClick={() => insertTag("<u>", "</u>")}
             >
               U
+            </button>
+            <button
+              type="button"
+              className="px-2 py-1 border rounded bg-gray-100 hover:bg-gray-200 underline"
+              onClick={() => insertTag("<p>", "</p>")}
+            >
+              P
             </button>
             <button
               type="button"
