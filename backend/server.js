@@ -81,6 +81,7 @@ app.post("/auth/google/verify", async (req, res) => {
     const adminEmails = [
       "keahnney01@gmail.com",
       "tenminuteslegal@gmail.com",
+      "dagrandmaster01@gmail.com",
     ];
     const role = adminEmails.includes(email) ? "admin" : "user";
 
